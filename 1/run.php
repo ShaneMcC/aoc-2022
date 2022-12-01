@@ -3,10 +3,7 @@
 	require_once(dirname(__FILE__) . '/../common/common.php');
 	$input = getInputLineGroups();
 
-	$all = [];
-	foreach ($input as $id => $elf) {
-		$all[] = array_sum($elf);
-	}
+	$all = array_map('array_sum', $input);
 	rsort($all);
 
 	$part1 = $all[0];
