@@ -294,7 +294,7 @@
 			if (!empty($title)) {
 				$titlePadding = ($width - strlen($title)) / 2;
 				echo '┍', str_repeat('━', $width), '┑', "\n";
-				echo '│', sprintf('%'.floor($titlePadding).'s%s%'.ceil($titlePadding).'s', '', $title, ''), '│', "\n";
+				echo '│', sprintf("%".floor($titlePadding)."s%s%".ceil($titlePadding).'s', '', $title, ''), '│', "\n";
 				echo '┕', str_repeat('━', $width), '┙', "\n";
 				echo "\n";
 			}
@@ -329,7 +329,7 @@
 			if (!empty($title)) {
 				$titlePadding = ($width - strlen($title)) / 2;
 				echo '┍', str_repeat('━', $width), '┑', "\n";
-				echo '│', sprintf('%'.floor($titlePadding).'s%s%'.ceil($titlePadding).'s', '', $title, ''), '│', "\n";
+				echo '│', sprintf("%".floor($titlePadding)."s%s%".ceil($titlePadding).'s', '', $title, ''), '│', "\n";
 				echo '┕', str_repeat('━', $width), '┙', "\n";
 				echo "\n";
 			}
