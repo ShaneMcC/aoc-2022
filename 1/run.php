@@ -11,5 +11,11 @@
 
 	echo 'Part 1: ', $part1, "\n";
 
-	// $part2 = -1;
-	// echo 'Part 2: ', $part2, "\n";
+	$all = [];
+	foreach ($input as $id => $elf) {
+		$all[] = array_sum($elf);
+	}
+	rsort($all);
+
+	$part2 = $all[0] + $all[1] + $all[2];
+	echo 'Part 2: ', $part2, "\n";
