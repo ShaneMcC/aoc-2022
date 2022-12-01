@@ -541,7 +541,7 @@ $wreath     ';;;,  ${bow}_  _$wreath  ,;;;' $reset
 $wreath      ';${berry}o$wreath;;$bow/_\/_\\$wreath;;${berry}o$wreath;' $reset
 $name      $wreath  ';;$bow\_\/_/$wreath;;' $reset
 $bow           '//\\\' $reset
-$bow           //  \\\ $name     Advent of Code 2021 $reset
+$bow           //  \\\ $name     Advent of Code 2022 $reset
 $bow          |/    \| $name    - ShaneMcC $reset
 $reset
 
@@ -586,7 +586,7 @@ $tree         /.$led2'$tree..$led1'$tree.$led4'$tree\ $reset
 $tree        /.$led3'$tree..$led2'$tree.$led4'$tree.$led3'$tree\ $reset
 $name       $tree /.$led4'$tree..$led1'$tree..$led1'$tree.\ $reset
 $snow "'""""$tree/$led1'$tree.$led2'$tree...$led1'$tree..$led3'$tree.\\$snow""'"'" $reset
-$tree      /$led2'$tree..$led1'$tree$led4'$tree..$led2'$tree.$led1'$tree.$led2'$tree.\ $name Advent of Code 2021 $reset
+$tree      /$led2'$tree..$led1'$tree$led4'$tree..$led2'$tree.$led1'$tree.$led2'$tree.\ $name Advent of Code 2022 $reset
 $tree      ^^^^^^${box}[_]$tree^^^^^^ $name - ShaneMcC $reset
 $reset
 
@@ -632,7 +632,7 @@ $suit     /  . {$beard}'-.....-'{$suit} .  \ $reset
 $suit    (../{$belt}_____{$buttons} : {$belt}_____{$suit}\..) $reset
 $hands    (_){$belt}(_____{$buckle}[-]{$belt}_____){$hands}(_) $reset
 $suit        |     |     | $reset
-$suit        ({$boots}.-.{$suit} / \\ {$boots}.-.{$suit}) $name Advent of Code 2021 $reset
+$suit        ({$boots}.-.{$suit} / \\ {$boots}.-.{$suit}) $name Advent of Code 2022 $reset
 $boots        (___)   (___) $name - ShaneMcC $reset
 $reset
 
@@ -669,7 +669,7 @@ $box    |${bow}   //`||||`\\\\ ${box}  | $reset
 $box    |${bow}      ||||${box}      | $reset
 $box    |${bow}      ||||${box}      | $reset
 $box    |${bow}      ||||${box}      | $reset
-$box    |${bow}      ||||${box}      |$name Advent of Code 2021 $reset
+$box    |${bow}      ||||${box}      |$name Advent of Code 2022 $reset
 $box    '------${bow}====${box}------'$name - ShaneMcC $reset
 $reset
 
@@ -711,7 +711,7 @@ $snow      $arms  /  ${snow}\ $buttons o $snow /${arms}  \\  $reset
 $snow  *       / '---' \\   *  $reset
 $snow         |  $buttons  o  $snow  |      *  $reset
 $snow   ---.---\\ $buttons  o $snow  /-----.---  $reset
-$snow           '-----'`   $name Advent of Code 2021 $reset
+$snow           '-----'`   $name Advent of Code 2022 $reset
 $snow                      $name - ShaneMcC $reset
 $snow $reset
 
