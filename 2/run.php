@@ -3,56 +3,58 @@
 	require_once(dirname(__FILE__) . '/../common/common.php');
 	$input = getInputLines();
 
-	$theirs = ['A' => 'Rock', 'B' => 'Paper', 'C' => 'Scissors'];
-	$ours = ['X' => 'Rock', 'Y' => 'Paper', 'Z' => 'Scissors'];
+	$options = ['Rock' => ['defeats' => 'Scissors', 'defeated' => 'Paper', 'value' => 1],
+	            'Paper' => ['defeats' => 'Rock', 'defeated' => 'Scissors', 'value' => 2],
+	            'Scissors' => ['defeats' => 'Paper', 'defeated' => 'Rock', 'value' => 3],
+	           ];
 
-	$shapeValue = ['Rock' => 1, 'Paper' => 2, 'Scissors' => 3];
-	$resultValue = ['Loss' => 0, 'Draw' => 3, 'Win' => 6];
-	$winning = ['Rock' => 'Scissors', 'Paper' => 'Rock', 'Scissors' => 'Paper'];
-	$losing = ['Scissors' => 'Rock', 'Rock' => 'Paper', 'Paper' => 'Scissors'];
+	$theirKey = ['A' => 'Rock', 'B' => 'Paper', 'C' => 'Scissors'];
+	$ourKey = ['X' => 'Rock', 'Y' => 'Paper', 'Z' => 'Scissors'];
 
-	$entries1 = [];
-	$entries2 = [];
+	$strategy1 = $strategy2 = [];
 	foreach ($input as $line) {
 		preg_match('#(.*) (.*)#SADi', $line, $m);
-		[$all, $them, $us] = $m;
+		[, $them, $us] = $m;
 
-		$entries1[] = [$theirs[$them], $ours[$us]];
+		$wantedResult = $us;
 
-		if ($us == 'X') {
-			$us = $winning[$theirs[$them]];
-		} else if ($us == 'Y') {
-			$us = $theirs[$them];
-		} else if ($us == 'Z') {
-			$us = $losing[$theirs[$them]];
+		$them = $theirKey[$them];
+		$us = $ourKey[$us];
+
+		$strategy1[] = [$them, $us];
+
+		if ($wantedResult == 'X') { // Lose
+			$us = $options[$them]['defeats']; // What do they win against
+		} else if ($wantedResult == 'Y') { // Draw
+			$us = $them; // Same as them
+		} else if ($wantedResult == 'Z') { // Win
+			$us = $options[$them]['defeated'];  // What do they lose against
 		}
-		$entries2[] = [$theirs[$them], $us];
+		$strategy2[] = [$them, $us];
 	}
 
-	function getScore($entries) {
-		global $shapeValue, $resultValue, $winning;
+	function getScore($strategy) {
+		global $options, $resultValue;
 
 		$score = 0;
-		foreach ($entries as $game) {
+		foreach ($strategy as $game) {
 			[$them, $us] = $game;
 
 			if ($them == $us) {
-				$score += $resultValue['Draw'];
-			} else if ($winning[$us] == $them) {
-				$score += $resultValue['Win'];
-			} else {
-				$score += $resultValue['Loss'];
+				$score += 3;
+			} else if ($options[$us]['defeats'] == $them) {
+				$score += 6;
 			}
 
-			$score += $shapeValue[$us];
+			$score += $options[$us]['value'];
 		}
 
 		return $score;
 	}
 
 
-	$part1 = getScore($entries1);
+	$part1 = getScore($strategy1);
 	echo 'Part 1: ', $part1, "\n";
 
-	$part2 = getScore($entries2);
+	$part2 = getScore($strategy2);
 	echo 'Part 2: ', $part2, "\n";
