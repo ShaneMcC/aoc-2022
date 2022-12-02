@@ -33,9 +33,7 @@
 		$strategy2[] = [$them, $us];
 	}
 
-	function getScore($strategy) {
-		global $options, $resultValue;
-
+	function getScore($strategy, $options) {
 		$score = 0;
 		foreach ($strategy as $game) {
 			[$them, $us] = $game;
@@ -53,8 +51,8 @@
 	}
 
 
-	$part1 = getScore($strategy1);
+	$part1 = getScore($strategy1, $options);
 	echo 'Part 1: ', $part1, "\n";
 
-	$part2 = getScore($strategy2);
+	$part2 = getScore($strategy2, $options);
 	echo 'Part 2: ', $part2, "\n";
