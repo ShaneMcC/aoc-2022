@@ -1,6 +1,7 @@
 <?php
 	/* Some of these are not memory efficient, so don't bother caring. */
 	ini_set('memory_limit', '-1');
+	if (!defined('START_TIME')) { define('START_TIME', microtime(true)); }
 
 	/*
 	 * To make code easier to read, sometimes we move "fluff" code to a separate
@@ -736,7 +737,7 @@ SNOWMAN;
 
 		try {
 			$__CLI['short'] = "hdtw" . (isset($__CLI['short']) && is_array($__CLI['short']) ? implode('', $__CLI['short']) : '');
-			$__CLI['long'] = array_merge(['help', 'file:', 'debug', 'test'], (isset($__CLI['long']) && is_array($__CLI['long']) ? $__CLI['long'] : []));
+			$__CLI['long'] = array_merge(['help', 'file:', 'debug', 'test', 'timed'], (isset($__CLI['long']) && is_array($__CLI['long']) ? $__CLI['long'] : []));
 			$__CLIOPTS = @getopt($__CLI['short'], $__CLI['long']);
 			if (isset($__CLIOPTS['h']) || isset($__CLIOPTS['help'])) {
 				echo getAsciiHeader(), "\n";
@@ -747,6 +748,7 @@ SNOWMAN;
 				echo '  -t, --test               Enable test mode (default to reading input from test.txt not input.txt)', "\n";
 				echo '  -d, --debug              Enable debug mode', "\n";
 				echo '      --file <file>        Read input from <file>', "\n";
+				echo '      --timed              Show calculated run time.', "\n";
 				if (isset($__CLI['extrahelp']) && is_array($__CLI['extrahelp'])) {
 					echo '', "\n";
 					echo 'Additional script-specific options:', "\n";
@@ -758,4 +760,14 @@ SNOWMAN;
 			}
 		} catch (Exception $e) { /* Do nothing. */ }
 		if (!isset($__CLIOPTS['w']) && !isset($__NOHEADER)) { echo getAsciiHeader(), "\n"; }
+
+		if (isset($__CLIOPTS['timed'])) {
+			register_shutdown_function(function() {
+				$endTime = microtime(true);
+				$time = $endTime - START_TIME;
+				$m = floor($time / 60);
+				$s = $time - ($m * 60);
+				echo "\n", 'PHP Time: ', sprintf('%dm%.3fs', $m, $s), "\n";
+			});
+		}
 	}
