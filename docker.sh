@@ -2,7 +2,7 @@
 
 cd "$(dirname "$0")"
 
-BASEIMAGE=shanemcc/aoc-2021-03
+BASEIMAGE=shanemcc/aoc-2022-01
 BASEDOCKERFILE="Dockerfile"
 
 IMAGE=${BASEIMAGE}
@@ -35,6 +35,7 @@ docker image inspect $IMAGE >/dev/null 2>&1
 if [ $? -ne 0 -o ${FORCEBUILD} = "1" ]; then
 	echo "One time setup: building docker image ${IMAGE}..."
 	cd docker
+	docker pull alpine:edge
 	docker build . -t $IMAGE --file ${DOCKERFILE}
 	cd ..
 	echo "Image build complete."
