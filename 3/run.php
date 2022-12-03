@@ -14,25 +14,18 @@
 		return ord($c) - (strtolower($c) == $c ? 96 : 38);
 	}
 
-
 	$part1 = $part2 = 0;
 	for ($i = 0; $i < count($rucksacks); $i++) {
 		[$first, $second] = $rucksacks[$i];
 
-		foreach ($first as $c) {
-			if (in_array($c, $second)) {
-				$part1 += getPriority($c);
-				break;
-			}
-		}
+		$common = array_intersect($first, $second);
+		$common = array_shift($common);
+		$part1 += getPriority($common);
 
 		if ($i % 3 == 0) {
-			foreach ($rucksacks[$i][2] as $c) {
-				if (in_array($c, $rucksacks[$i + 1][2]) && in_array($c, $rucksacks[$i + 2][2])) {
-					$part2 += getPriority($c);
-					break;
-				}
-			}
+			$common = array_intersect($rucksacks[$i][2], $rucksacks[$i + 1][2], $rucksacks[$i + 2][2]);
+			$common = array_shift($common);
+			$part2 += getPriority($common);
 		}
 	}
 	echo 'Part 1: ', $part1, "\n";
