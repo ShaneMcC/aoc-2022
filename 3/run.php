@@ -16,16 +16,9 @@
 
 	$part1 = $part2 = 0;
 	for ($i = 0; $i < count($rucksacks); $i++) {
-		[$first, $second] = $rucksacks[$i];
-
-		$common = array_intersect($first, $second);
-		$common = array_shift($common);
-		$part1 += getPriority($common);
-
+		$part1 += getPriority(array_values(array_intersect($rucksacks[$i][0], $rucksacks[$i][1]))[0]);
 		if ($i % 3 == 0) {
-			$common = array_intersect($rucksacks[$i][2], $rucksacks[$i + 1][2], $rucksacks[$i + 2][2]);
-			$common = array_shift($common);
-			$part2 += getPriority($common);
+			$part2 += getPriority(array_values(array_intersect($rucksacks[$i][2], $rucksacks[$i + 1][2], $rucksacks[$i + 2][2]))[0]);
 		}
 	}
 	echo 'Part 1: ', $part1, "\n";
