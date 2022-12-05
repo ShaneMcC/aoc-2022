@@ -4,13 +4,13 @@
 	[$instacks, $moves] = getInputLineGroups();
 
 	$base = array_pop($instacks);
-	$stacks = array_fill(1, ceil(strlen($base)/4), []);
+	$stacks = array_fill(1, ceil(strlen($base)/4), '');
 
 	foreach ($instacks as $line) {
 		for ($stackId = 1; $stackId <= count($stacks); $stackId++) {
 			$item = trim($line[(($stackId - 1) * 4) + 1] ?? '');
 			if (!empty($item)) {
-				$stacks[$stackId][] = $item;
+				$stacks[$stackId] .= $item;
 			}
 		}
 	}
@@ -20,9 +20,10 @@
 			preg_match('#move (\d+) from (\d+) to (\d+)#Ai', $line, $m);
 			[, $count, $from, $to] = $m;
 
-			$removed = array_splice($stacks[$from], 0, $count);
-			if ($part1) { $removed = array_reverse($removed); }
-			array_unshift($stacks[$to], ...$removed);
+			$removed = substr($stacks[$from], 0, $count);
+			$stacks[$from] = substr($stacks[$from], $count);
+			if ($part1) { $removed = strrev($removed); }
+			$stacks[$to] = $removed . $stacks[$to];
 		}
 
 		return $stacks;
