@@ -3,20 +3,18 @@
 	require_once(dirname(__FILE__) . '/../common/common.php');
 	[$instacks, $moves] = getInputLineGroups();
 
-	$stacks = [];
 	$base = array_pop($instacks);
+	$stacks = array_fill(1, ceil(strlen($base)/4), []);
 
 	foreach ($instacks as $line) {
-		$stackId = 1;
-		for ($i = 1; $i < strlen($line); $i += 4) {
-			$item = trim($line[$i]);
+		for ($stackId = 1; $stackId <= count($stacks); $stackId++) {
+			$pos = (($stackId - 1) * 4) + 1;
+			$item = trim($line[$pos] ?? '');
 			if (!empty($item)) {
 				$stacks[$stackId][] = $item;
 			}
-			$stackId++;
 		}
 	}
-	ksort($stacks);
 
 	function moveCrates($stacks, $moves, $part1 = true) {
 		foreach ($moves as $line) {
