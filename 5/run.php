@@ -18,7 +18,7 @@
 
 	function moveCrates($stacks, $moves, $part1 = true) {
 		foreach ($moves as $line) {
-			preg_match('#move (.*) from (.*) to (.*)#SADi', $line, $m);
+			preg_match('#move (\d+) from (\d+) to (\d+)#Ai', $line, $m);
 			[, $count, $from, $to] = $m;
 
 			$removed = array_splice($stacks[$from], 0, $count);
