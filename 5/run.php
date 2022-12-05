@@ -3,7 +3,6 @@
 	require_once(dirname(__FILE__) . '/../common/common.php');
 	[$instacks, $moves] = getInputLineGroups();
 
-
 	$stacks = [];
 	$base = array_pop($instacks);
 
@@ -17,6 +16,7 @@
 			$stackId++;
 		}
 	}
+	ksort($stacks);
 
 	function moveCrates($stacks, $moves, $part1 = true) {
 		foreach ($moves as $line) {
@@ -32,18 +32,9 @@
 	}
 
 	$stacks1 = moveCrates($stacks, $moves);
-	$part1 = '';
-	for ($i = 1; $i <= count($stacks1); $i++) {
-		$part1 .= $stacks1[$i][0];
-	}
-
+	$part1 = implode('', array_map(fn($a) => $a[0], $stacks1));
 	echo 'Part 1: ', $part1, "\n";
 
-
 	$stacks2 = moveCrates($stacks, $moves, false);
-	$part2 = '';
-	for ($i = 1; $i <= count($stacks2); $i++) {
-		$part2 .= $stacks2[$i][0];
-	}
-
+	$part2 = implode('', array_map(fn($a) => $a[0], $stacks2));
 	echo 'Part 2: ', $part2, "\n";
