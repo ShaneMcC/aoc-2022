@@ -5,7 +5,7 @@
 
 	function getStartMarker($input, $length) {
 		for ($i = $length - 1; $i < strlen($input); $i++) {
-			$last = str_split(substr($input, $i - $length - 1, $length));
+			$last = str_split(substr($input, $i - ($length - 1), $length));
 			if (count(array_unique($last)) == $length) {
 				return $i + 1;
 			}
