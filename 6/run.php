@@ -13,5 +13,12 @@
 
 	echo 'Part 1: ', $part1 + 1, "\n";
 
-	// $part2 = -1;
-	// echo 'Part 2: ', $part2, "\n";
+	for ($i = 13; $i < strlen($input); $i++) {
+		$last = str_split(substr($input, $i - 13, 14));
+		if (count(array_unique($last)) == 14) {
+			$part2 = $i;
+			break;
+		}
+	}
+
+	echo 'Part 2: ', $part2 + 1, "\n";
