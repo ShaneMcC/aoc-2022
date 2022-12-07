@@ -80,5 +80,18 @@
 
 	echo 'Part 1: ', $part1, "\n";
 
-	// $part2 = -1;
-	// echo 'Part 2: ', $part2, "\n";
+	$totalSize = 70000000;
+	$currentSize = $totalSize - $tree['/']['size'];
+	$wantedSize = 30000000 - $currentSize;
+
+	$possible = [];
+
+	foreach ($tree as $f => $d) {
+		if ($d['size'] > $wantedSize) {
+			$possible[] = $d['size'];
+		}
+	}
+	sort($possible);
+
+	$part2 = $possible[0];
+	echo 'Part 2: ', $part2, "\n";
