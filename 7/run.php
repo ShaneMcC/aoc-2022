@@ -3,11 +3,14 @@
 	require_once(dirname(__FILE__) . '/../common/common.php');
 	$input = getInputLines();
 
+	$hasLS = [];
+	$ignore = false;
 	$tree = [];
 	$pwd = '/';
 	foreach ($input as $line) {
 		$bits = explode(' ', $line);
 		if ($bits[0] == '$' && $bits[1] == 'cd') {
+			$ignore = false;
 			if ($bits[2] == '..') {
 				$pwd = (dirname($pwd) == '/') ? '/' : dirname($pwd) . '/';
 			} else if ($bits[2][0] == '/') {
@@ -15,7 +18,13 @@
 			} else {
 				$pwd .= $bits[2] . '/';
 			}
-		} else if (is_numeric($bits[0])) {
+		} else if ($bits[0] == '$' && $bits[1] == 'ls') {
+			if (isset($hasLS[$pwd])) {
+				$ignore = true;
+			} else {
+				$hasLS[$pwd] = true;
+			}
+		} else if (!$ignore && is_numeric($bits[0])) {
 			$file = $pwd . $bits[1];
 			while ($file != '/') {
 				$file = (dirname($file) == '/') ? '/' : dirname($file) . '/';
