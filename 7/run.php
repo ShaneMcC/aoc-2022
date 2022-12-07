@@ -6,20 +6,21 @@
 	$tree = [];
 	$pwd = '/';
 	foreach ($input as $line) {
-		if (preg_match('#\$ cd (.*)#SADi', $line, $m)) {
-			if ($m[1] == '..') {
+		$bits = explode(' ', $line);
+		if ($bits[0] == '$' && $bits[1] == 'cd') {
+			if ($bits[2] == '..') {
 				$pwd = (dirname($pwd) == '/') ? '/' : dirname($pwd) . '/';
-			} else if ($m[1][0] == '/') {
-				$pwd = $m[1];
+			} else if ($bits[2][0] == '/') {
+				$pwd = $bits[2];
 			} else {
-				$pwd .= $m[1] . '/';
+				$pwd .= $bits[2] . '/';
 			}
-		} else if (preg_match('#(\d+)\s+(.*)$#SADi', $line, $m)) {
-			$file = $pwd . $m[2];
+		} else if (is_numeric($bits[0])) {
+			$file = $pwd . $bits[1];
 			while ($file != '/') {
 				$file = (dirname($file) == '/') ? '/' : dirname($file) . '/';
 				if (!isset($tree[$file])) { $tree[$file] = 0; }
-				$tree[$file] += $m[1];
+				$tree[$file] += $bits[0];
 			}
 		}
 	}
