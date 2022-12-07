@@ -1,5 +1,11 @@
 #!/usr/bin/php
 <?php
+    $__CLI['long'] = ['files', 'full'];
+    $__CLI['extrahelp'] = [];
+    $__CLI['extrahelp'][] = '      --files              Include files in debug output.';
+    $__CLI['extrahelp'][] = '      --full               Show full paths in debug output.';
+
+
 	require_once(dirname(__FILE__) . '/../common/common.php');
 	$input = getInputLines();
 
@@ -23,11 +29,29 @@
 			$hasLS[$pwd] = true;
 		} else if (!$ignore && is_numeric($bits[0])) {
 			$file = $pwd . $bits[1];
+
+			if (isDebug() && isset($__CLIOPTS['files'])) { $tree[$file] = $bits[0]; }
+
 			while ($file != '/') {
 				$file = (dirname($file) == '/') ? '/' : dirname($file) . '/';
 				if (!isset($tree[$file])) { $tree[$file] = 0; }
 				$tree[$file] += $bits[0];
 			}
+		}
+	}
+
+	if (isDebug()) {
+		ksort($tree);
+		foreach ($tree as $file => $size) {
+			$depth = substr_count($file, '/');
+			$type = $file[strlen($file) - 1] == '/' ? 'dir' : 'file';
+			if ($type == 'dir') { $depth--; }
+			$displayName = (isset($__CLIOPTS['full']) ? $file : (basename($file) == '' ? '/' : basename($file)));
+			echo str_repeat("  ", $depth), '- ', $displayName, ' (', $type, ', size=', $size, ')', "\n";
+		}
+		// Remove non-directories
+		foreach (array_filter(array_keys($tree), fn($f) => $f[strlen($f) - 1] != '/') as $file) {
+			unset($tree[$file]);
 		}
 	}
 
