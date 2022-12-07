@@ -28,12 +28,11 @@
 
 		if (preg_match('#cd (.*)#SADi', $cmd, $m)) {
 			if ($m[1] == '..') {
-				$pwd = dirname($pwd);
+				$pwd = (dirname($pwd) == '/') ? '/' : dirname($pwd) . '/';
 			} else if ($m[1][0] == '/') {
 				$pwd = $m[1];
 			} else {
-				if ($pwd != '/') { $pwd .= '/'; }
-				$pwd .= $m[1];
+				$pwd .= $m[1] . '/';
 			}
 
 			if (!isset($tree[$pwd])) {
@@ -58,9 +57,7 @@
 			}
 
 			if ($c['type'] == 'dir') {
-				$dirName = $directory;
-				if ($dirName != '/') { $dirName .= '/'; }
-				$dirName .= $f;
+				$dirName = $directory . $f . '/';
 
 				if ($tree[$dirName]['size'] == FALSE) {
 					updateDirectorySizes($tree, $dirName);
