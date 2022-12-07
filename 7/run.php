@@ -6,7 +6,6 @@
 	$tree = [];
 	$pwd = '/';
 	foreach ($input as $line) {
-
 		if (preg_match('#\$ cd (.*)#SADi', $line, $m)) {
 			if ($m[1] == '..') {
 				$pwd = (dirname($pwd) == '/') ? '/' : dirname($pwd) . '/';
@@ -15,16 +14,12 @@
 			} else {
 				$pwd .= $m[1] . '/';
 			}
-		} else if (!preg_match('#\$ ls#SADi', $line, $m)) {
-			if (preg_match('#(\d+)\s+(.*)$#SADi', $line, $m)) {
-				$file = $pwd . $m[2];
-				$size = $m[1];
-
-				while ($file != '/') {
-					$file = (dirname($file) == '/') ? '/' : dirname($file) . '/';
-					if (!isset($tree[$file])) { $tree[$file] = 0; }
-					$tree[$file] += $size;
-				}
+		} else if (preg_match('#(\d+)\s+(.*)$#SADi', $line, $m)) {
+			$file = $pwd . $m[2];
+			while ($file != '/') {
+				$file = (dirname($file) == '/') ? '/' : dirname($file) . '/';
+				if (!isset($tree[$file])) { $tree[$file] = 0; }
+				$tree[$file] += $m[1];
 			}
 		}
 	}
