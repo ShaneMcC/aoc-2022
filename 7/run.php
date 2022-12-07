@@ -3,6 +3,7 @@
 	require_once(dirname(__FILE__) . '/../common/common.php');
 	$input = getInputLines();
 
+	// Get commands and their output from the input
 	$commands = [];
 	$command = '';
 	$commandOutput = [];
@@ -18,6 +19,7 @@
 	}
 	if (!empty($command)) { $commands[] = ['cmd' => $command, 'output' => $commandOutput]; }
 
+	// Parse the output of the commands into a tree.
 	$tree = [];
 	$pwd = '/';
 	foreach ($commands as $c) {
@@ -48,6 +50,7 @@
 		}
 	}
 
+	// Recursively correct the directory sizes in a given tree.
 	function updateDirectorySizes(&$tree, $directory = '/') {
 		foreach ($tree[$directory]['contents'] as $f => $c) {
 			if ($c['type'] == 'file') {
@@ -66,32 +69,16 @@
 			}
 		}
 	}
-
 	updateDirectorySizes($tree);
 
 	// echo json_encode($tree, JSON_PRETTY_PRINT), "\n";
 
-	$part1 = 0;
-	foreach ($tree as $d) {
-		if ($d['size'] <= 100000) {
-			$part1 += $d['size'];
-		}
-	}
-
+	$part1 = array_sum(array_map(fn($d) => $d['size'], array_filter($tree, fn($d) => $d['size'] <= 100000)));
 	echo 'Part 1: ', $part1, "\n";
 
-	$totalSize = 70000000;
-	$currentSize = $totalSize - $tree['/']['size'];
-	$wantedSize = 30000000 - $currentSize;
 
-	$possible = [];
-
-	foreach ($tree as $f => $d) {
-		if ($d['size'] > $wantedSize) {
-			$possible[] = $d['size'];
-		}
-	}
+	$wantedSize = 30000000 - (70000000 - $tree['/']['size']);
+	$possible = array_map(fn($d) => $d['size'], array_filter($tree, fn($d) => $d['size'] > $wantedSize));
 	sort($possible);
-
 	$part2 = $possible[0];
 	echo 'Part 2: ', $part2, "\n";
