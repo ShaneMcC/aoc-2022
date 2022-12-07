@@ -26,6 +26,7 @@
 		$cmd = $c['cmd'];
 		$out = $c['output'];
 
+		// Track current directory.
 		if (preg_match('#cd (.*)#SADi', $cmd, $m)) {
 			if ($m[1] == '..') {
 				$pwd = (dirname($pwd) == '/') ? '/' : dirname($pwd) . '/';
@@ -34,48 +35,26 @@
 			} else {
 				$pwd .= $m[1] . '/';
 			}
-
-			if (!isset($tree[$pwd])) {
-				$tree[$pwd] = ['size' => FALSE, 'contents' => []];
-			}
+		// Track files in directory
 		} else if ($cmd == 'ls') {
 			foreach ($out as $lsout) {
 				if (preg_match('#(\d+)\s+(.*)$#SADi', $lsout, $m)) {
-					$tree[$pwd]['contents'][$m[2]] = ['type' => 'file', 'size' => $m[1]];
-				} else if (preg_match('#dir\s+(.*)$#SADi', $lsout, $m)) {
-					$tree[$pwd]['contents'][$m[1]] = ['type' => 'dir'];
+					$file = $pwd . $m[2];
+					$size = $m[1];
+
+					while ($file != '/') {
+						$file = (dirname($file) == '/') ? '/' : dirname($file) . '/';
+						if (!isset($tree[$file])) { $tree[$file] = 0; }
+						$tree[$file] += $size;
+					}
 				}
 			}
 		}
 	}
 
-	// Recursively correct the directory sizes in a given tree.
-	function updateDirectorySizes(&$tree, $directory = '/') {
-		foreach ($tree[$directory]['contents'] as $f => $c) {
-			if ($c['type'] == 'file') {
-				$tree[$directory]['size'] += $c['size'];
-			}
-
-			if ($c['type'] == 'dir') {
-				$dirName = $directory . $f . '/';
-
-				if ($tree[$dirName]['size'] == FALSE) {
-					updateDirectorySizes($tree, $dirName);
-				}
-				$tree[$directory]['size'] += $tree[$dirName]['size'];
-			}
-		}
-	}
-	updateDirectorySizes($tree);
-
-	// echo json_encode($tree, JSON_PRETTY_PRINT), "\n";
-
-	$part1 = array_sum(array_map(fn($d) => $d['size'], array_filter($tree, fn($d) => $d['size'] <= 100000)));
+	$part1 = array_sum(array_filter($tree, fn($d) => $d <= 100000));
 	echo 'Part 1: ', $part1, "\n";
 
-
-	$wantedSize = 30000000 - (70000000 - $tree['/']['size']);
-	$possible = array_map(fn($d) => $d['size'], array_filter($tree, fn($d) => $d['size'] > $wantedSize));
-	sort($possible);
-	$part2 = $possible[0];
+	$wantedSize = 30000000 - (70000000 - $tree['/']);
+	$part2 = sorted('sort', array_filter($tree, fn($d) => $d > $wantedSize))[0] ?? 0;
 	echo 'Part 2: ', $part2, "\n";
