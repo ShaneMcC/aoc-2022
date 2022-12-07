@@ -19,11 +19,8 @@
 				$pwd .= $bits[2] . '/';
 			}
 		} else if ($bits[0] == '$' && $bits[1] == 'ls') {
-			if (isset($hasLS[$pwd])) {
-				$ignore = true;
-			} else {
-				$hasLS[$pwd] = true;
-			}
+			$ignore = $hasLS[$pwd] ?? false;
+			$hasLS[$pwd] = true;
 		} else if (!$ignore && is_numeric($bits[0])) {
 			$file = $pwd . $bits[1];
 			while ($file != '/') {
