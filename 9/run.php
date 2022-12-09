@@ -11,18 +11,6 @@
 	               'L' => [-1, 0],
 	              ];
 
-	function moveKnot($head, $tail) {
-		$xDiff = $head[0] - $tail[0];
-		$yDiff = $head[1] - $tail[1];
-
-		if (abs($xDiff) <= 1 && abs($yDiff) <= 1) { return $tail; }
-
-		$tail[0] += $xDiff <=> 0;
-		$tail[1] += $yDiff <=> 0;
-
-		return $tail;
-	}
-
 	$part1 = [];
 	$part2 = [];
 
@@ -36,8 +24,15 @@
 			$rope[0][0] += $directions[$d][0];
 			$rope[0][1] += $directions[$d][1];
 
+			// Move the tails.
 			for ($k = 1; $k < count($rope); $k++) {
-				$rope[$k] = moveKnot($rope[$k - 1], $rope[$k]);
+				$xDiff = $rope[$k - 1][0] - $rope[$k][0];
+				$yDiff = $rope[$k - 1][1] - $rope[$k][1];
+
+				if (abs($xDiff) > 1 || abs($yDiff) > 1) {
+					$rope[$k][0] += $xDiff <=> 0;
+					$rope[$k][1] += $yDiff <=> 0;
+				}
 			}
 
 			$part1[implode(',', $rope[1])] = true;
