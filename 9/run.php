@@ -44,10 +44,12 @@
 
 	$tailPositions = [1 => [], 9 => []];
 
+	if (isDebug()) {
+		drawMap(getRopeMap($rope), '.', true, 'Initial State');
+	}
+
 	foreach ($input as $in) {
 		[$d, $c] = explode(' ', $in, 2);
-
-		if (isDebug()) { echo $in, "\n"; }
 
 		for ($i = 0; $i < $c; $i++) {
 			// Move the head
@@ -58,10 +60,12 @@
 				$rope[$k] = moveKnot($rope[$k - 1], $rope[$k]);
 			}
 
-			if (isDebug()) { echo "\t", json_encode($rope), "\n"; }
-
 			$tailPositions[1][json_encode($rope[1])] = true;
 			$tailPositions[9][json_encode($rope[9])] = true;
+		}
+
+		if (isDebug()) {
+			drawMap(getRopeMap($rope), '.', true, $in);
 		}
 	}
 
