@@ -42,9 +42,7 @@
 	$part1 = [];
 	$part2 = [];
 
-	if (isDebug()) {
-		drawMap(getRopeMap($rope), '.', true, 'Initial State');
-	}
+	// if (isDebug()) { drawMap(getRopeMap($rope), true, 'Initial State');	}
 
 	foreach ($input as $in) {
 		[$d, $c] = explode(' ', $in, 2);
@@ -62,13 +60,13 @@
 			$part2[implode(',', $rope[count($rope) - 1])] = true;
 		}
 
-		if (isDebug()) {
-			drawMap(getRopeMap($rope), '.', true, $in);
-		}
+		// if (isDebug()) { drawMap(getRopeMap($rope), true, $in); }
 	}
 
-	$part1 = count($part1);
-	echo 'Part 1: ', $part1, "\n";
+	if (isDebug()) {
+		drawMap(getPositionMap($part2), true, $in);
+	}
 
-	$part2 = count($part2);
-	echo 'Part 2: ', $part2, "\n";
+	echo 'Part 1: ', count($part1), "\n";
+	echo 'Part 2: ', count($part2), "\n";
+
