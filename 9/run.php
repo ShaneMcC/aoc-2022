@@ -3,9 +3,6 @@
 	require_once(dirname(__FILE__) . '/../common/common.php');
 	$input = getInputLines();
 
-	$tail = [0, 0];
-	$head = [0, 0];
-
 	$rope = array_fill(0, 10, [0, 0]);
 
 	$directions = ['U' => [0, 1],
@@ -42,7 +39,8 @@
 		return $tail;
 	}
 
-	$tailPositions = [1 => [], 9 => []];
+	$part1 = [];
+	$part2 = [];
 
 	if (isDebug()) {
 		drawMap(getRopeMap($rope), '.', true, 'Initial State');
@@ -60,8 +58,8 @@
 				$rope[$k] = moveKnot($rope[$k - 1], $rope[$k]);
 			}
 
-			$tailPositions[1][implode(',', $rope[1])] = true;
-			$tailPositions[9][implode(',', $rope[9])] = true;
+			$part1[implode(',', $rope[1])] = true;
+			$part2[implode(',', $rope[count($rope) - 1])] = true;
 		}
 
 		if (isDebug()) {
@@ -69,8 +67,8 @@
 		}
 	}
 
-	$part1 = count($tailPositions[1]);
+	$part1 = count($part1);
 	echo 'Part 1: ', $part1, "\n";
 
-	$part2 = count($tailPositions[9]);
+	$part2 = count($part2);
 	echo 'Part 2: ', $part2, "\n";
