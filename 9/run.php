@@ -17,8 +17,8 @@
 
 		if ($yDiff <= 1 && $xDiff <= 1) { return $tail; }
 
-		$tail[0] += ($tail[0] != $head[0]) ? ($tail[0] < $head[0] ? 1 : -1) : 0;
-		$tail[1] += ($tail[1] != $head[1]) ? ($tail[1] < $head[1] ? 1 : -1) : 0;
+		$tail[0] += $tail[0] == $head[0] ? 0 : ($tail[0] < $head[0] ? 1 : -1);
+		$tail[1] += $tail[1] == $head[1] ? 0 : ($tail[1] < $head[1] ? 1 : -1);
 
 		return $tail;
 	}
