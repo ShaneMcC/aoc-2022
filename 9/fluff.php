@@ -26,7 +26,7 @@
 		for ($y = $maxY - 1; $y >= $minY; $y--) {
 			for ($x = $minX; $x < $maxX; $x++) {
 				$out = [$x, $y] == [0, 0] ? 's' : '.';
-				if ($out != 's' && isset($positions[json_encode([$x, $y])])) {
+				if ($out != 's' && isset($positions[implode(',', [$x, $y])])) {
 					$out = '#';
 				}
 

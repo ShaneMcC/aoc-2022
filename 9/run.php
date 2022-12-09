@@ -60,8 +60,8 @@
 				$rope[$k] = moveKnot($rope[$k - 1], $rope[$k]);
 			}
 
-			$tailPositions[1][json_encode($rope[1])] = true;
-			$tailPositions[9][json_encode($rope[9])] = true;
+			$tailPositions[1][implode(',', $rope[1])] = true;
+			$tailPositions[9][implode(',', $rope[9])] = true;
 		}
 
 		if (isDebug()) {
