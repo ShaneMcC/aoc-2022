@@ -12,13 +12,13 @@
 	              ];
 
 	function moveKnot($head, $tail) {
-		$yDiff = abs($tail[1] - $head[1]);
-		$xDiff = abs($tail[0] - $head[0]);
+		$xDiff = $head[0] - $tail[0];
+		$yDiff = $head[1] - $tail[1];
 
-		if ($yDiff <= 1 && $xDiff <= 1) { return $tail; }
+		if (abs($xDiff) <= 1 && abs($yDiff) <= 1) { return $tail; }
 
-		$tail[0] += $tail[0] == $head[0] ? 0 : ($tail[0] < $head[0] ? 1 : -1);
-		$tail[1] += $tail[1] == $head[1] ? 0 : ($tail[1] < $head[1] ? 1 : -1);
+		$tail[0] += $xDiff <=> 0;
+		$tail[1] += $yDiff <=> 0;
 
 		return $tail;
 	}
