@@ -14,7 +14,8 @@
 
 		$startTime = 2;
 		$pending = [];
-		for ($i = 1; $i <= 220; $i++) {
+		$screen = '';
+		for ($i = 1; $i <= 240; $i++) {
 			if ($i == 20 || $i == 60 || $i == 100 || $i ==  140 || $i ==  180 || $i ==  220) {
 				if (isDebug()) { echo 'Cycle ', $i, ' x is: ', $x, "\n"; }
 				$xSum += ($i * $x);
@@ -27,6 +28,8 @@
 				}
 			}
 
+			$screen .= $x == ($i % 40) -1 || $x == ($i % 40) || $x == ($i % 40) + 1 ? '#' : '.';
+
 			$next = $instructions[$i] ?? ['noop'];
 			$pending[$startTime] = $next;
 
@@ -37,13 +40,11 @@
 			}
 		}
 
-		return $xSum;
+		return [$xSum, str_split($screen, 40)];
 	}
 
-	var_dump(processInstructions($instructions));
+	[$part1, $screen] = processInstructions($instructions);
 
-	// $part1 = -1;
-	// echo 'Part 1: ', $part1, "\n";
-
-	// $part2 = -1;
-	// echo 'Part 2: ', $part2, "\n";
+	echo 'Part 1: ', $part1, "\n";
+	echo 'Part 2: ', "\n";
+	echo implode("\n", $screen);
