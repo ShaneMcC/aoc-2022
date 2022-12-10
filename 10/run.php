@@ -19,25 +19,30 @@
 		$x = 1;
 		$xSum = 0;
 
-		$startTime = 2;
+		$startTime = 0;
 		$deferred = [];
 		$screen = '';
 		for ($i = 0; $i < 240; $i++) {
+			// Part 1 wants the sum at the start of the tick
 			if (($i - 20) % 40 == 0) {
 				$xSum += ($i * $x);
 			}
 
+			// Find the current instruction, and then put it into our
+			// deferred array for later processing after the correct amount of
+			// ticks have passed.
+			$next = $instructions[$i] ?? ['noop'];
+			if (isset($handlers[$next[0]]['ticks'])) { $startTime += $handlers[$next[0]]['ticks']; }
+			if (isset($handlers[$next[0]]['handle'])) { $deferred[$startTime] = $next; }
+
+			// Process any deferred instructions at the end of the tick.
 			if (isset($deferred[$i])) {
 				$instr = $deferred[$i];
 				$x = $handlers[$instr[0]]['handle']($x, $instr);
 			}
 
+			// Draw the screen sprites.
 			$screen .= $x == ($i % 40) -1 || $x == ($i % 40) || $x == ($i % 40) + 1 ? '#' : ' ';
-
-			$next = $instructions[$i] ?? ['noop'];
-
-			if (isset($handlers[$next[0]]['handle'])) { $deferred[$startTime] = $next; }
-			if (isset($handlers[$next[0]]['ticks'])) { $startTime += $handlers[$next[0]]['ticks']; }
 		}
 
 		return [$xSum, str_split($screen, 40)];
@@ -48,5 +53,7 @@
 	echo 'Part 1: ', $part1, "\n";
 	echo 'Part 2: ', decodeText($screen), "\n";
 	if (isDebug()) {
-		echo implode("\n", $screen), "\n";
+		echo "\n";
+		foreach ($screen as $line) { echo str_replace('#', '█', $line), "\n"; }
+		echo "\n";
 	}
