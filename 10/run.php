@@ -17,7 +17,7 @@
 		$pending = [];
 		$screen = '';
 		for ($i = 0; $i < 240; $i++) {
-			if ($i == 20 || $i == 60 || $i == 100 || $i ==  140 || $i ==  180 || $i ==  220) {
+			if (($i - 20) % 40 == 0) {
 				if (isDebug()) { echo 'Cycle ', $i, ' x is: ', $x, "\n"; }
 				$xSum += ($i * $x);
 			}
