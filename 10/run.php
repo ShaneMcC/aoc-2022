@@ -4,41 +4,40 @@
 	require_once(dirname(__FILE__) . '/../common/decodeText.php');
 	$input = getInputLines();
 
+	$handlers = [];
+	$handlers['noop'] = ['ticks' => 1, 'handle' => fn($x, $instr) => $x];
+	$handlers['addx'] = ['ticks' => 2, 'handle' => fn($x, $instr) => $x += $instr[1]];
+
 	$instructions = [['']];
 	foreach ($input as $line) {
 		$instructions[] = explode(' ', $line);
 	}
 
 	function processInstructions($instructions) {
+		global $handlers;
+
 		$x = 1;
 		$xSum = 0;
 
 		$startTime = 2;
-		$pending = [];
+		$deferred = [];
 		$screen = '';
 		for ($i = 0; $i < 240; $i++) {
 			if (($i - 20) % 40 == 0) {
-				if (isDebug()) { echo 'Cycle ', $i, ' x is: ', $x, "\n"; }
 				$xSum += ($i * $x);
 			}
 
-			if (isset($pending[$i])) {
-				if ($pending[$i][0] == 'addx') {
-					if (isDebug()) { echo $i, ' Adding: ', $pending[$i][1], "\n"; }
-					$x += $pending[$i][1];
-				}
+			if (isset($deferred[$i])) {
+				$instr = $deferred[$i];
+				$x = $handlers[$instr[0]]['handle']($x, $instr);
 			}
 
 			$screen .= $x == ($i % 40) -1 || $x == ($i % 40) || $x == ($i % 40) + 1 ? '#' : ' ';
 
 			$next = $instructions[$i] ?? ['noop'];
-			$pending[$startTime] = $next;
 
-			if ($next[0] == 'noop') {
-				$startTime += 1;
-			} else if ($next[0] == 'addx') {
-				$startTime += 2;
-			}
+			if (isset($handlers[$next[0]]['handle'])) { $deferred[$startTime] = $next; }
+			if (isset($handlers[$next[0]]['ticks'])) { $startTime += $handlers[$next[0]]['ticks']; }
 		}
 
 		return [$xSum, str_split($screen, 40)];
