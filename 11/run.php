@@ -12,11 +12,14 @@
 				$monkey['inspectCount'] = 0;
 			} else if (preg_match('#Starting items: (.*)$#', $line, $m)) {
 				$monkey['items'] = explode(',', str_replace(' ', '', $m[1]));
-			} else if (preg_match('#Operation: new = old (.*) (.*)$#', $line, $m)) {
-				if ($m[1] == '*') { $monkey['operation'] = fn($x) => $x * ($m[2] == 'old' ? $x : $m[2]); }
-				else if ($m[1] == '+') { $monkey['operation'] = fn($x) => $x + ($m[2] == 'old' ? $x : $m[2]); }
-				else if ($m[1] == '-') { $monkey['operation'] = fn($x) => $x - ($m[2] == 'old' ? $x : $m[2]); }
+			} else if (preg_match('#Operation: new = old (.*) ([0-9]+)$#', $line, $m)) {
+				if ($m[1] == '*') { $monkey['operation'] = fn($x) => $x * $m[2]; }
+				else if ($m[1] == '+') { $monkey['operation'] = fn($x) => $x + $m[2]; }
+				else if ($m[1] == '-') { $monkey['operation'] = fn($x) => $x - $m[2]; }
 				else { die('Unknown operation: ' . $line); }
+			} else if (preg_match('#Operation: new = old (.*) old$#', $line, $m)) {
+				if ($m[1] == '*') { $monkey['operation'] = fn($x) => $x * $x; }
+				else { die('Unknown old operation: ' . $line); }
 			} else if (preg_match('#Test: divisible by (.*)$#', $line, $m)) {
 				$monkey['test'] = ['condition' => $m[1]];
 			} else if (preg_match('#If (true|false): throw to monkey (.*)$#', $line, $m)) {
