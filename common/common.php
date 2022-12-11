@@ -509,6 +509,22 @@
 		}
 	}
 
+	// LCM and GCD from https://stackoverflow.com/questions/147515/least-common-multiple-for-3-or-more-numbers
+	function gcd($a, $b) {
+		$t = 0;
+		while ($b != 0){
+			$t = $b;
+			$b = $a % $b;
+			$a = $t;
+		}
+
+		return $a;
+	}
+
+	function lcm($a, $b) {
+		return ($a * $b / gcd($a, $b));
+	}
+
 	// Remove unneeded stuff when timing.
 	if (getenv("TIMED") === FALSE) {
 		/**
