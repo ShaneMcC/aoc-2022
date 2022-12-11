@@ -42,33 +42,36 @@
 	}
 
 
-	function processRound(&$monkies, $part2 = false) {
+	function processRound(&$monkies, $part2 = false, $debugging = null) {
 		$allDivisors = 1;
 		foreach ($monkies as $m) {
 			$allDivisors *= $m['test']['condition'];
 		}
 
+		$debugging ??= isDebug();
+
 		foreach (array_keys($monkies) as $mid) {
 			$monkey = &$monkies[$mid];
 
-			if (isDebug() ) { echo 'Monkey ', $mid, ':', "\n"; }
+			if ($debugging) { echo 'Monkey ', $mid, ':', "\n"; }
 
 			foreach ($monkey['items'] as $item) {
-				if (isDebug()) { echo "\t", 'Monkey inspects an item with a worry level of ', $item, "\n"; }
+				if ($debugging) { echo "\t", 'Monkey inspects an item with a worry level of ', $item, "\n"; }
 				$item = $monkey['operation']($item);
-				if (isDebug()) { echo "\t\t", 'Worry level is now: ', $item, "\n"; }
+				if ($debugging) { echo "\t\t", 'Worry level is now: ', $item, "\n"; }
 
 				if ($part2) {
 					$item = $item % $allDivisors;
+					if ($debugging) { echo "\t\t", 'Worry level is managed by mod ', $allDivisors, ' to ', $item, "\n"; }
 				} else {
 					$item = floor($item / 3);
-					if (isDebug()) { echo "\t\t", 'Monkey gets bored with item. Worry level is divided by 3 to ', $item, "\n"; }
+					if ($debugging) { echo "\t\t", 'Monkey gets bored with item. Worry level is divided by 3 to ', $item, "\n"; }
 				}
 
 				$result = ($item % $monkey['test']['condition'] == 0);
 				$newMonkey = $monkey['test'][$result];
 
-				if (isDebug()) {
+				if ($debugging) {
 					echo "\t\t", 'Current worry level ', ($result ? 'is' : 'is not'), ' divisible by: ', $monkey['test']['condition'], "\n";
 					echo "\t\t", 'Item with worry level ', $item, ' is thrown to ', $newMonkey, "\n";
 				}
@@ -103,12 +106,21 @@
 
 	$monkies = $startingMonkies;
 	for ($i = 0; $i < 10000; $i++) {
-		if (isDebug()) {
+		if (isDebug() && $i < 20) {
 			echo '==========', "\n";
 			echo 'Part 2 - Round ', $i, "\n";
 			echo '==========', "\n";
 		}
-		processRound($monkies, true);
+		processRound($monkies, true, (isDebug() && $i < 20));
+
+		if (isDebug() && $i == 19) {
+			echo '==========', "\n";
+			foreach ($monkies as $m) {
+				echo 'Monkey ', $m['id'], ': ', $m['inspectCount'], "\n";
+			}
+			echo '==========', "\n";
+			echo '...', "\n";
+		}
 	}
 	if (isDebug()) {
 		foreach ($monkies as $m) {
