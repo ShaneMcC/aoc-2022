@@ -42,18 +42,28 @@
 	}
 
 
-	function processRound(&$monkies) {
+	function processRound(&$monkies, $part2 = false) {
+		$allDivisors = 1;
+		foreach ($monkies as $m) {
+			$allDivisors *= $m['test']['condition'];
+		}
+
 		foreach (array_keys($monkies) as $mid) {
 			$monkey = &$monkies[$mid];
 
-			echo 'Monkey ', $mid, ':', "\n";
+			if (isDebug() ) { echo 'Monkey ', $mid, ':', "\n"; }
 
 			foreach ($monkey['items'] as $item) {
 				if (isDebug()) { echo "\t", 'Monkey inspects an item with a worry level of ', $item, "\n"; }
 				$item = $monkey['operation']($item);
 				if (isDebug()) { echo "\t\t", 'Worry level is now: ', $item, "\n"; }
-				$item = floor($item / 3);
-				if (isDebug()) { echo "\t\t", 'Monkey gets bored with item. Worry level is divided by 3 to ', $item, "\n"; }
+
+				if ($part2) {
+					$item = $item % $allDivisors;
+				} else {
+					$item = floor($item / 3);
+					if (isDebug()) { echo "\t\t", 'Monkey gets bored with item. Worry level is divided by 3 to ', $item, "\n"; }
+				}
 
 				$result = ($item % $monkey['test']['condition'] == 0);
 				$newMonkey = $monkey['test'][$result];
@@ -73,6 +83,11 @@
 	$startingMonkies = $monkies;
 
 	for ($i = 0; $i < 20; $i++) {
+		if (isDebug()) {
+			echo '==========', "\n";
+			echo 'Part 1 - Round ', $i, "\n";
+			echo '==========', "\n";
+		}
 		processRound($monkies);
 	}
 	if (isDebug()) {
@@ -83,9 +98,25 @@
 
 	$part1 = array_map(fn($m) => $m['inspectCount'], $monkies);
 	rsort($part1);
-
 	$part1 = $part1[0] * $part1[1];
 	echo 'Part 1: ', $part1, "\n";
 
-	// $part2 = -1;
-	// echo 'Part 2: ', $part2, "\n";
+	$monkies = $startingMonkies;
+	for ($i = 0; $i < 10000; $i++) {
+		if (isDebug()) {
+			echo '==========', "\n";
+			echo 'Part 2 - Round ', $i, "\n";
+			echo '==========', "\n";
+		}
+		processRound($monkies, true);
+	}
+	if (isDebug()) {
+		foreach ($monkies as $m) {
+			echo 'Monkey ', $m['id'], ': ', $m['inspectCount'], "\n";
+		}
+	}
+
+	$part2 = array_map(fn($m) => $m['inspectCount'], $monkies);
+	rsort($part2);
+	$part2 = $part2[0] * $part2[1];
+	echo 'Part 2: ', $part2, "\n";
