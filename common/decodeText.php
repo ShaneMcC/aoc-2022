@@ -31,6 +31,13 @@
 	                       '000000000000000000000000000000' => ' ',
 	                      ];
 
+	// Guesses from https://github.com/SizableShrimp/AdventOfCode2022/blob/main/src/util/java/me/sizableshrimp/adventofcode2022/helper/LetterParser.java
+	$encodedChars[5][6]['111000100001000010000100011100'] = 'I';
+	$encodedChars[5][6]['100101111011110100101001010010'] = 'M';
+	$encodedChars[5][6]['100101101010110100101001010010'] = 'N';
+	$encodedChars[5][6]['011001001010010100101010001010'] = 'Q';
+	$encodedChars[5][6]['011101000001100000100001011100'] = 'S';
+
 	// Unofficial characters found in custom inputs in the past.
 	// 5-Wide I
 	$encodedChars[5][6]['111110010000100001000010011111'] = 'I';
