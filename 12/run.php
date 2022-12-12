@@ -2,13 +2,15 @@
 <?php
 	require_once(dirname(__FILE__) . '/../common/common.php');
 	$grid = getInputMap();
-	$start = [0, 0];
-	$end = [0, 0];
+	$start = [];
+	$allA = [];
+	$end = [];
 
 	foreach ($grid as $y => $row) {
 		foreach ($row as $x => $cell) {
-			if ($cell == 'S') { $start = [$x, $y]; $grid[$y][$x] = 'a'; }
+			if ($cell == 'S' ) { $start = [$x, $y]; $grid[$y][$x] = 'a'; }
 			if ($cell == 'E') { $end = [$x, $y]; $grid[$y][$x] = 'z'; }
+			if ($cell == 'a' ) { $allA[] = [$x, $y]; }
 		}
 	}
 
@@ -62,12 +64,15 @@
 		return $costs;
 	}
 
-	$foo = getCost($grid, $start, $end);
-
-	var_dump($foo[$end[1]][$end[0]]);
-
-	$part1 = $foo[$end[1]][$end[0]]['cost'];
+	$costs = getCost($grid, $start, $end);
+	$part1 = $costs[$end[1]][$end[0]]['cost'];
 	echo 'Part 1: ', $part1, "\n";
 
-	// $part2 = -1;
-	// echo 'Part 2: ', $part2, "\n";
+	$bestA = PHP_INT_MAX;
+	foreach ($allA as $a) {
+		$costs = getCost($grid, $a, $end);
+		$bestA = min($bestA, ($costs[$end[1]][$end[0]]['cost'] ?? PHP_INT_MAX));
+	}
+
+	$part2 = $bestA;
+	echo 'Part 2: ', $part2, "\n";
