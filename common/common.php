@@ -219,6 +219,23 @@
 	}
 
 	/**
+	 * Find all cells that have content that match $wanted
+	 *
+	 * @param $grid Grid to look at.
+	 * @param $wanted Cell content to look for.
+	 * @return Matching cells.
+	 */
+	function findCells($grid, $wanted) {
+		$cells = [];
+		foreach (cells($grid) as [$x, $y, $cell]) {
+			if ($cell == $wanted) {
+				$cells[] = [$x, $y];
+			}
+		}
+		return $cells;
+	}
+
+	/**
 	 * Generator to provide adjacent cells of a point.
 	 *
 	 * @param $grid Grid to look at

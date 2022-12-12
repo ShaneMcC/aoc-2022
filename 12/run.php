@@ -2,19 +2,13 @@
 <?php
 	require_once(dirname(__FILE__) . '/../common/common.php');
 	$grid = getInputMap();
-	$start = [];
-	$allA = [];
-	$end = [];
+	$start = findCells($grid, 'S')[0];
+	$allA = findCells($grid, 'a');
+	$end = findCells($grid, 'E')[0];
+	$grid[$start[1]][$start[0]] = 'a';
+	$grid[$end[1]][$end[0]] = 'z';
 
-	foreach ($grid as $y => $row) {
-		foreach ($row as $x => $cell) {
-			if ($cell == 'S' ) { $start = [$x, $y]; $grid[$y][$x] = 'a'; }
-			if ($cell == 'E') { $end = [$x, $y]; $grid[$y][$x] = 'z'; }
-			if ($cell == 'a' ) { $allA[] = [$x, $y]; }
-		}
-	}
-
-	function getCost($grid, $start, $end, $max = PHP_INT_MAX) {
+	function getCost($grid, $start, $end, $max = PHP_INT_MAX, $includePath = false) {
 		$costs = [];
 
 		$queue = new SPLPriorityQueue();
@@ -23,24 +17,16 @@
 
 		while (!$queue->isEmpty()) {
 			$q = $queue->extract();
-
-			list($x, $y, $path) = $q['data'];
-
-			// SPLPriorityQueue treats higher numbers as higher priority,
-			// so we using negatives when we insert, so get the real value here.
+			[$x, $y, $path] = $q['data'];
 			$cost = abs($q['priority']);
 			if ($cost >= $max) { continue; }
 
-			// If we've visited here before then this is a longer-cost path so
-			// we can ignore it.
 			if (isset($costs[$y][$x])) { continue; }
 
-			if (isDebug()) { $path[] = [$x, $y]; }
+			if ($includePath) { $path[] = [$x, $y]; }
 			$costs[$y][$x] = ['cost' => $cost, 'path' => $path];
 
-			// Try and visit anywhere that we can visit
 			foreach (getAdjacentCells($grid, $x, $y) as [$pX, $pY]) {
-				// If it's valid...
 				if (ord($grid[$pY][$pX]) > (ord($grid[$y][$x]) + 1)) { continue; }
 				if (isset($costs[$pY][$pX])) { continue; }
 
@@ -48,18 +34,14 @@
 			}
 		}
 
-		return $costs;
+		return $costs[$end[1]][$end[0]] ?? FALSE;
 	}
 
-	$costs = getCost($grid, $start, $end);
-	$part1 = $costs[$end[1]][$end[0]]['cost'];
+	$part1 = getCost($grid, $start, $end)['cost'];
 	echo 'Part 1: ', $part1, "\n";
 
-	$bestA = PHP_INT_MAX;
+	$part2 = $part1;
 	foreach ($allA as $a) {
-		$costs = getCost($grid, $a, $end, $bestA);
-		$bestA = min($bestA, ($costs[$end[1]][$end[0]]['cost'] ?? PHP_INT_MAX));
+		$part2 = min($part2, getCost($grid, $a, $end, $part2)['cost'] ?? PHP_INT_MAX);
 	}
-
-	$part2 = $bestA;
 	echo 'Part 2: ', $part2, "\n";
