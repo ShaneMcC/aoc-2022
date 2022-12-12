@@ -228,15 +228,19 @@
 	 * @param $self (Default: false) Include self?
 	 */
 	function getAdjacentCells($grid, $x, $y, $diagonal = false, $self = false) {
-		if ($diagonal && isset($grid[$y - 1][$x - 1])) { yield [$x - 1, $y - 1]; }
-		if (isset($grid[$y - 1][$x])) { yield [$x, $y - 1]; }
-		if ($diagonal && isset($grid[$y - 1][$x + 1])) { yield [$x + 1, $y - 1]; }
-		if (isset($grid[$y][$x - 1])) { yield [$x - 1, $y]; }
-		if ($self && isset($grid[$y][$x])) { yield [$x, $y]; }
-		if (isset($grid[$y][$x + 1])) { yield [$x + 1, $y]; }
-		if ($diagonal && isset($grid[$y + 1][$x - 1])) { yield [$x - 1, $y + 1]; }
-		if (isset($grid[$y + 1][$x])) { yield [$x, $y + 1]; }
-		if ($diagonal && isset($grid[$y + 1][$x + 1])) { yield [$x + 1, $y + 1]; }
+		$adjacent = [];
+
+		if ($diagonal && isset($grid[$y - 1][$x - 1])) { $adjacent[] = [$x - 1, $y - 1]; }
+		if (isset($grid[$y - 1][$x])) { $adjacent[] = [$x, $y - 1]; }
+		if ($diagonal && isset($grid[$y - 1][$x + 1])) { $adjacent[] = [$x + 1, $y - 1]; }
+		if (isset($grid[$y][$x - 1])) { $adjacent[] = [$x - 1, $y]; }
+		if ($self && isset($grid[$y][$x])) { $adjacent[] = [$x, $y]; }
+		if (isset($grid[$y][$x + 1])) { $adjacent[] = [$x + 1, $y]; }
+		if ($diagonal && isset($grid[$y + 1][$x - 1])) { $adjacent[] = [$x - 1, $y + 1]; }
+		if (isset($grid[$y + 1][$x])) { $adjacent[] = [$x, $y + 1]; }
+		if ($diagonal && isset($grid[$y + 1][$x + 1])) { $adjacent[] = [$x + 1, $y + 1]; }
+
+		return $adjacent;
 	}
 
 	/**
