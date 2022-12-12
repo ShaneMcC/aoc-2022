@@ -14,18 +14,7 @@
 		}
 	}
 
-	function getSurrounding($x, $y) {
-		$locations = [];
-
-		$locations[] = [$x, $y - 1];
-		$locations[] = [$x - 1, $y];
-		$locations[] = [$x + 1, $y];
-		$locations[] = [$x, $y + 1];
-
-		return $locations;
-	}
-
-	function getCost($grid, $start, $end) {
+	function getCost($grid, $start, $end, $max = PHP_INT_MAX) {
 		$costs = [];
 
 		$queue = new SPLPriorityQueue();
@@ -40,20 +29,18 @@
 			// SPLPriorityQueue treats higher numbers as higher priority,
 			// so we using negatives when we insert, so get the real value here.
 			$cost = abs($q['priority']);
+			if ($cost >= $max) { continue; }
 
 			// If we've visited here before then this is a longer-cost path so
 			// we can ignore it.
 			if (isset($costs[$y][$x])) { continue; }
 
-			// $path[] = [$x, $y, $grid[$y][$x]];
+			if (isDebug()) { $path[] = [$x, $y]; }
 			$costs[$y][$x] = ['cost' => $cost, 'path' => $path];
 
 			// Try and visit anywhere that we can visit
-			foreach (getSurrounding($x, $y) as $p) {
-				list($pX, $pY) = $p;
-
+			foreach (getAdjacentCells($grid, $x, $y) as [$pX, $pY]) {
 				// If it's valid...
-				if (!isset($grid[$pY][$pX])) { continue; }
 				if (ord($grid[$pY][$pX]) > (ord($grid[$y][$x]) + 1)) { continue; }
 				if (isset($costs[$pY][$pX])) { continue; }
 
@@ -70,7 +57,7 @@
 
 	$bestA = PHP_INT_MAX;
 	foreach ($allA as $a) {
-		$costs = getCost($grid, $a, $end);
+		$costs = getCost($grid, $a, $end, $bestA);
 		$bestA = min($bestA, ($costs[$end[1]][$end[0]]['cost'] ?? PHP_INT_MAX));
 	}
 
