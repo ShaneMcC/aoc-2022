@@ -10,28 +10,19 @@
 	}
 
 	function comparePackets($left, $right) {
-		// Ensure we have 2 arrays to look at.
+		if (is_integer($left) && is_integer($right)) {
+			return $left <=> $right;
+		}
+
 		if (!is_array($left)) { $left = [$left]; }
 		if (!is_array($right)) { $right = [$right]; }
 
-		for ($i = 0; $i < max(count($left), count($right)); $i++) {
-			if (!isset($left[$i]) && isset($right[$i])) { return -1; } // Left out of items, correct order.
-			if (isset($left[$i]) && !isset($right[$i])) { return 1; } // Right out of items, wrong order.
-
-			$l = $left[$i];
-			$r = $right[$i];
-
-			if (is_integer($l) && is_integer($r)) {
-				if ($l < $r) { return -1; } // Left side is smaller, correct order.
-				else if ($l > $r) { return 1; } // Right side is smaller, wrong order.
-			} else {
-				// Recurse, and return if the numbers not equal
-				$compare = comparePackets($l, $r);
-				if ($compare !== 0) { return $compare; }
-			}
+		for ($i = 0; $i < min(count($left), count($right)); $i++) {
+			$compare = comparePackets($left[$i], $right[$i]);
+			if ($compare !== 0) { return $compare; }
 		}
 
-		return 0; // Packets are equal.
+		return count($left) <=> count($right);
 	}
 
 	$part1 = 0;
