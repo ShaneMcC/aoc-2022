@@ -1,48 +1,56 @@
 #!/usr/bin/php
 <?php
 	require_once(dirname(__FILE__) . '/../common/common.php');
-	$groups = getInputLineGroups();
+	$lines = getInputLines();
 
-	$packets = [[[2]], [[6]]];
-	$pairs = [];
-	foreach ($groups as $group) {
-		$pair = [];
-		foreach ($group as $g) {
-			$p = json_decode($g, true);
-			$pair[] = $p;
-			$packets[] = $p;
-		}
-		$pairs[] = $pair;
+	$packets = [];
+	foreach ($lines as $line) {
+		if (empty($line)) { continue; }
+		$packets[] = json_decode($line, true);
 	}
 
-	function comparePairs($first, $second, $level = 0) {
-		if (isDebug()) { echo str_repeat("\t", $level), 'Compare: ', json_encode($first), ' vs ', json_encode($second), "\n"; }
+	function comparePairs($left, $right, $level = -1) {
+		$debugging = ($level >= 0);
+		if ($debugging) { echo str_repeat('  ', $level), '- Compare: ', json_encode($left), ' vs ', json_encode($right), "\n"; }
 
-		for ($i = 0; $i < max(count($first), count($second)); $i++) {
-			if (!isset($first[$i]) && isset($second[$i])) {
-				if (isDebug()) { echo str_repeat("\t", $level), 'No more left.', "\n"; }
+		if (is_array($left) && !is_array($right)) {
+			$right = [$right];
+			if ($debugging) {
+				echo str_repeat('  ', $level), '- Mixed types; convert right to ', json_encode($right), ' and retry comparison', "\n";
+				echo str_repeat('  ', $level), '- Compare: ', json_encode($left), ' vs ', json_encode($right), "\n";
+			}
+		} else if (!is_array($left) && is_array($right)) {
+			$left = [$left];
+			if ($debugging) {
+				echo str_repeat('  ', $level), '- Mixed types; convert left to ', json_encode($left), ' and retry comparison', "\n";
+				echo str_repeat('  ', $level), '- Compare: ', json_encode($left), ' vs ', json_encode($right), "\n";
+			}
+		}
+
+		for ($i = 0; $i < max(count($left), count($right)); $i++) {
+			if (!isset($left[$i]) && isset($right[$i])) {
+				if ($debugging) { echo str_repeat('  ', $level + 1), '- Left side ran out of items, so inputs are in the right order', "\n"; }
 				return -1;
 			}
-			if (isset($first[$i]) && !isset($second[$i])) {
-				if (isDebug()) { echo str_repeat("\t", $level), 'No more right.', "\n"; }
+			if (isset($left[$i]) && !isset($right[$i])) {
+				if ($debugging) { echo str_repeat('  ', $level + 1), '- Right side ran out of items, so inputs are not in the right order', "\n"; }
 				return 1;
 			}
 
-			$left = $first[$i];
-			$right = $second[$i];
+			$l = $left[$i];
+			$r = $right[$i];
 
-			if (is_integer($left) && is_integer($right)) {
-				if (isDebug()) { echo str_repeat("\t", $level), "\t\t", 'int: ', json_encode($left), ' with ', json_encode($right), "\n"; }
-				if ($left > $right) {
+			if (is_integer($l) && is_integer($r)) {
+				if ($debugging) { echo str_repeat('  ', $level + 1), '- Compare: ', json_encode($l), ' vs ', json_encode($r), "\n"; }
+				if ($l > $r) {
+					if ($debugging) { echo str_repeat('  ', $level + 2), '- Right side is smaller, so inputs are not in the right order', "\n"; }
 					return 1;
-				} else if ($left < $right) {
+				} else if ($l < $r) {
+					if ($debugging) { echo str_repeat('  ', $level + 2), '- Left side is smaller, so inputs are in the right order', "\n"; }
 					return -1;
 				}
-			} else if (is_array($left) || is_array($right)) {
-				$left = is_array($left) ? $left : [$left];
-				$right = is_array($right) ? $right : [$right];
-
-				$compare = comparePairs($left, $right, $level + 1);
+			} else {
+				$compare = comparePairs($l, $r, ($debugging ? $level + 1 : -1));
 				if ($compare !== 0) { return $compare; }
 			}
 		}
@@ -51,27 +59,20 @@
 	}
 
 	$part1 = 0;
-	$p = 1;
-	for ($p = 1; $p <= count($pairs); $p++) {
-		if (isDebug()) {
-			echo '==========', "\n";
-			echo 'Pair ', $p, "\n";
-			echo '==========', "\n";
-		}
-		[$first, $second] = $pairs[$p - 1];
-		$correct = comparePairs($first, $second) == -1;
-
-		if (isDebug()) { echo '==> ', json_encode($correct), "\n"; }
-		if ($correct) { $part1 += $p; }
+	for ($i = 0; $i < count($packets); $i += 2) {
+		$pairNum = (($i+2) / 2);
+		if (isDebug()) { echo '== Pair ', $pairNum, ' ==', "\n"; }
+		if (comparePairs($packets[$i], $packets[$i + 1], (isDebug() ? 0 : -1)) == -1) { $part1 += $pairNum; }
+		if (isDebug()) { echo "\n"; }
 	}
 
 	echo 'Part 1: ', $part1, "\n";
 
-	usort($packets, 'comparePairs');
+	array_push($packets, [[2]], [[6]]);
 
+	usort($packets, 'comparePairs');
 	$part2 = 1;
 	foreach ($packets as $k => $p) {
 		if ($p == [[2]] || $p == [[6]]) { $part2 *= $k + 1; }
 	}
-
 	echo 'Part 2: ', $part2, "\n";
