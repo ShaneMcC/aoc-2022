@@ -3,11 +3,14 @@
 	require_once(dirname(__FILE__) . '/../common/common.php');
 	$groups = getInputLineGroups();
 
+	$packets = [[[2]], [[6]]];
 	$pairs = [];
 	foreach ($groups as $group) {
 		$pair = [];
 		foreach ($group as $g) {
-			$pair[] = json_decode($g, true);
+			$p = json_decode($g, true);
+			$pair[] = $p;
+			$packets[] = $p;
 		}
 		$pairs[] = $pair;
 	}
@@ -18,11 +21,11 @@
 		for ($i = 0; $i < max(count($first), count($second)); $i++) {
 			if (!isset($first[$i]) && isset($second[$i])) {
 				if (isDebug()) { echo str_repeat("\t", $level), 'No more left.', "\n"; }
-				return true;
+				return -1;
 			}
 			if (isset($first[$i]) && !isset($second[$i])) {
 				if (isDebug()) { echo str_repeat("\t", $level), 'No more right.', "\n"; }
-				return false;
+				return 1;
 			}
 
 			$left = $first[$i];
@@ -31,20 +34,20 @@
 			if (is_integer($left) && is_integer($right)) {
 				if (isDebug()) { echo str_repeat("\t", $level), "\t\t", 'int: ', json_encode($left), ' with ', json_encode($right), "\n"; }
 				if ($left > $right) {
-					return false;
+					return 1;
 				} else if ($left < $right) {
-					return true;
+					return -1;
 				}
 			} else if (is_array($left) || is_array($right)) {
 				$left = is_array($left) ? $left : [$left];
 				$right = is_array($right) ? $right : [$right];
 
 				$compare = comparePairs($left, $right, $level + 1);
-				if ($compare !== null) { return $compare; }
+				if ($compare !== 0) { return $compare; }
 			}
 		}
 
-		return null;
+		return 0;
 	}
 
 	$part1 = 0;
@@ -56,7 +59,7 @@
 			echo '==========', "\n";
 		}
 		[$first, $second] = $pairs[$p - 1];
-		$correct = comparePairs($first, $second);
+		$correct = comparePairs($first, $second) == -1;
 
 		if (isDebug()) { echo '==> ', json_encode($correct), "\n"; }
 		if ($correct) { $part1 += $p; }
@@ -64,5 +67,11 @@
 
 	echo 'Part 1: ', $part1, "\n";
 
-	// $part2 = -1;
-	// echo 'Part 2: ', $part2, "\n";
+	usort($packets, 'comparePairs');
+
+	$part2 = 1;
+	foreach ($packets as $k => $p) {
+		if ($p == [[2]] || $p == [[6]]) { $part2 *= $k + 1; }
+	}
+
+	echo 'Part 2: ', $part2, "\n";
