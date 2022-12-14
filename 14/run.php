@@ -42,23 +42,6 @@
 		}
 	}
 
-	function drawSandMap($map, $source, $floor = false) {
-		$minX = PHP_INT_MAX;
-		$maxX = PHP_INT_MIN;
-		foreach ($map as $m) {
-			$maxX = max($maxX, max(array_keys($m)));
-			$minX = min($minX, min(array_keys($m)));
-		}
-
-		for ($y = 0; $y <= ($floor != false ? $floor : max(array_keys($map))); $y++) {
-			for ($x = $minX; $x <= $maxX; $x++) {
-				if ($floor != false && $y == $floor) { echo '#'; }
-				else { echo isset($map[$y][$x]) ? $map[$y][$x] : ($source == [$x, $y] ? 'x' : '.'); }
-			}
-			echo "\n";
-		}
-	}
-
 	function addSand(&$map, $source, $floor = false, $count = 0) {
 		$previousLoc = [];
 		while (true) {
