@@ -10,9 +10,7 @@
 	}
 
 	function comparePackets($left, $right) {
-		if (is_integer($left) && is_integer($right)) {
-			return $left <=> $right;
-		}
+		if (is_integer($left) && is_integer($right)) { return $left <=> $right; }
 
 		if (!is_array($left)) { $left = [$left]; }
 		if (!is_array($right)) { $right = [$right]; }
