@@ -66,19 +66,12 @@
 			if ($floor == false && $y > max(array_keys($map))) { return FALSE; } // We've overflowed.
 			if (isset($map[$y][$x])) { return FALSE; } // Space is already Sand
 
-			$canDown = !isset($map[$y + 1][$x]) && (($y + 1) != $floor);
-			$canLeft = !isset($map[$y + 1][$x - 1]) && (($y + 1) != $floor);
-			$canRight = !isset($map[$y + 1][$x + 1]) && (($y + 1) != $floor);
-
-			if ($canDown) {
+			if (!isset($map[$y + 1][$x]) && (($y + 1) != $floor)) {
 				$loc = [$x, $y + 1];
-				continue;
-			} else if ($canLeft) {
+			} else if (!isset($map[$y + 1][$x - 1]) && (($y + 1) != $floor)) {
 				$loc = [$x - 1, $y + 1];
-				continue;
-			} else if ($canRight) {
+			} else if (!isset($map[$y + 1][$x + 1]) && (($y + 1) != $floor)) {
 				$loc = [$x + 1, $y + 1];
-				continue;
 			} else {
 				$map[$y][$x] = 'o';
 				return $loc;
