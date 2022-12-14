@@ -80,16 +80,13 @@
 		}
 	}
 
-	$baseMap = $map;
-
 	$part1 = 0;
 	while (addSand($map, $source) !== FALSE) { $part1++; }
 	if (isDebug()) { drawSandMap($map, $source); }
 	echo 'Part 1: ', $part1, "\n";
 
-	$map = $baseMap;
 	$floor = max(array_keys($map)) + 2;
-	$part2 = 0;
+	$part2 = $part1;
 	while (addSand($map, $source, $floor) !== FALSE) { $part2++; }
 	if (isDebug()) { drawSandMap($map, $source, $floor); }
 	echo 'Part 2: ', $part2, "\n";
