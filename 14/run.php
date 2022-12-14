@@ -52,26 +52,31 @@
 
 		for ($y = 0; $y <= max(array_keys($map)); $y++) {
 			for ($x = $minX; $x <= $maxX; $x++) {
-				echo isset($map[$y][$x]) ? $map[$y][$x] : '.';
+				echo $source == [$x, $y] ? 'x' : (isset($map[$y][$x]) ? $map[$y][$x] : '.');
 			}
 			echo "\n";
 		}
 	}
 
-	function addSand(&$map, $source) {
+	function addSand(&$map, $source, $floor = false) {
 		$loc = $source;
 		while (true) {
 			[$x, $y] = $loc;
 
-			if ($y > max(array_keys($map))) { return FALSE; }
+			if ($floor == false && $y > max(array_keys($map))) { return FALSE; } // We've overflowed.
+			if (isset($map[$y][$x])) { return FALSE; } // Space is already Sand
 
-			if (!isset($map[$y + 1][$x])) {
+			$canDown = !isset($map[$y + 1][$x]) && (($y + 1) != $floor);
+			$canLeft = !isset($map[$y + 1][$x - 1]) && (($y + 1) != $floor);
+			$canRight = !isset($map[$y + 1][$x + 1]) && (($y + 1) != $floor);
+
+			if ($canDown) {
 				$loc = [$x, $y + 1];
 				continue;
-			} else if (!isset($map[$y + 1][$x - 1])) {
+			} else if ($canLeft) {
 				$loc = [$x - 1, $y + 1];
 				continue;
-			} else if (!isset($map[$y + 1][$x + 1])) {
+			} else if ($canRight) {
 				$loc = [$x + 1, $y + 1];
 				continue;
 			} else {
@@ -81,12 +86,16 @@
 		}
 	}
 
-	$part1 = 0;
-	while (addSand($map, $source) !== FALSE) {
-		$part1++;
-	}
+	$baseMap = $map;
 
+	$part1 = 0;
+	while (addSand($map, $source) !== FALSE) { $part1++; }
+	if (isDebug()) { drawSandMap($map, $source); }
 	echo 'Part 1: ', $part1, "\n";
 
-	// $part2 = -1;
-	// echo 'Part 2: ', $part2, "\n";
+	$map = $baseMap;
+	$floor = max(array_keys($map)) + 2;
+	$part2 = 0;
+	while (addSand($map, $source, $floor) !== FALSE) { $part2++; }
+	if (isDebug()) { drawSandMap($map, $source); }
+	echo 'Part 2: ', $part2, "\n";
