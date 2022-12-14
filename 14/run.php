@@ -42,7 +42,7 @@
 		}
 	}
 
-	function drawSandMap($map, $source) {
+	function drawSandMap($map, $source, $floor = false) {
 		$minX = PHP_INT_MAX;
 		$maxX = PHP_INT_MIN;
 		foreach ($map as $m) {
@@ -50,9 +50,10 @@
 			$minX = min($minX, min(array_keys($m)));
 		}
 
-		for ($y = 0; $y <= max(array_keys($map)); $y++) {
+		for ($y = 0; $y <= ($floor != false ? $floor : max(array_keys($map))); $y++) {
 			for ($x = $minX; $x <= $maxX; $x++) {
-				echo $source == [$x, $y] ? 'x' : (isset($map[$y][$x]) ? $map[$y][$x] : '.');
+				if ($floor != false && $y == $floor) { echo '#'; }
+				else { echo isset($map[$y][$x]) ? $map[$y][$x] : ($source == [$x, $y] ? 'x' : '.'); }
 			}
 			echo "\n";
 		}
@@ -90,5 +91,5 @@
 	$floor = max(array_keys($map)) + 2;
 	$part2 = 0;
 	while (addSand($map, $source, $floor) !== FALSE) { $part2++; }
-	if (isDebug()) { drawSandMap($map, $source); }
+	if (isDebug()) { drawSandMap($map, $source, $floor); }
 	echo 'Part 2: ', $part2, "\n";
