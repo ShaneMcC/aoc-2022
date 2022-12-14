@@ -59,34 +59,37 @@
 		}
 	}
 
-	function addSand(&$map, $source, $floor = false) {
-		$loc = $source;
+	function addSand(&$map, $source, $floor = false, $count = 0) {
 		while (true) {
-			[$x, $y] = $loc;
+			$loc = $source;
+			while (true) {
+				[$x, $y] = $loc;
 
-			if ($floor == false && $y > max(array_keys($map))) { return FALSE; } // We've overflowed.
-			if (isset($map[$y][$x])) { return FALSE; } // Space is already Sand
+				if ($floor == false && $y > max(array_keys($map))) { break 2; } // We've overflowed.
+				if (isset($map[$y][$x])) { break 2; } // Space is already Sand
 
-			if (!isset($map[$y + 1][$x]) && (($y + 1) != $floor)) {
-				$loc = [$x, $y + 1];
-			} else if (!isset($map[$y + 1][$x - 1]) && (($y + 1) != $floor)) {
-				$loc = [$x - 1, $y + 1];
-			} else if (!isset($map[$y + 1][$x + 1]) && (($y + 1) != $floor)) {
-				$loc = [$x + 1, $y + 1];
-			} else {
-				$map[$y][$x] = 'o';
-				return $loc;
+				if (!isset($map[$y + 1][$x]) && (($y + 1) != $floor)) {
+					$loc = [$x, $y + 1];
+				} else if (!isset($map[$y + 1][$x - 1]) && (($y + 1) != $floor)) {
+					$loc = [$x - 1, $y + 1];
+				} else if (!isset($map[$y + 1][$x + 1]) && (($y + 1) != $floor)) {
+					$loc = [$x + 1, $y + 1];
+				} else {
+					$map[$y][$x] = 'o';
+					$count++;
+					break;
+				}
 			}
 		}
+		return $count;
 	}
 
-	$part1 = 0;
-	while (addSand($map, $source) !== FALSE) { $part1++; }
+
+	$part1 = addSand($map, $source);
 	if (isDebug()) { drawSandMap($map, $source); }
 	echo 'Part 1: ', $part1, "\n";
 
 	$floor = max(array_keys($map)) + 2;
-	$part2 = $part1;
-	while (addSand($map, $source, $floor) !== FALSE) { $part2++; }
+	$part2 = addSand($map, $source, $floor, $part1);
 	if (isDebug()) { drawSandMap($map, $source, $floor); }
 	echo 'Part 2: ', $part2, "\n";
