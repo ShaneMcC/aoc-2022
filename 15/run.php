@@ -42,5 +42,33 @@
 
 	echo 'Part 1: ', $part1, "\n";
 
-	// $part2 = -1;
-	// echo 'Part 2: ', $part2, "\n";
+	$min = 0;
+	$max = isTest() ? 20 : 4000000;
+	for ($y = $min; $y <= $max; $y++) {
+		for ($x = $min; $x <= $max; $x++) {
+			$covered = false;
+			foreach ($sensors as $s) {
+				$distanceToClosest = $s['distance'];
+				$distanceToMe = manhattan($x, $y, $s['loc'][0], $s['loc'][1]);
+
+				if ($distanceToMe <= $distanceToClosest) {
+					$covered = true;
+
+					// If this space is covered, a others along this row
+					// will be as well, so lets bypass those.
+					$manhattanToTop = manhattan($s['loc'][0], $y, $s['loc'][0], $s['loc'][1]);
+					$x = $s['loc'][0] + ($s['distance'] - $manhattanToTop);
+
+					break;
+				}
+			}
+
+			if (!$covered) {
+				$part2 = (4000000 * $x) + $y;
+				echo json_encode([$x, $y]), "\n";
+				break 2;
+			}
+		}
+	}
+
+	echo 'Part 2: ', $part2, "\n";
