@@ -8,6 +8,8 @@
 	$minX = PHP_INT_MAX;
 	$maxX = PHP_INT_MIN;
 
+	$checkRow = isTest() ? 10 : 2000000;
+
 	$sensors = [];
 	$beacons = [];
 	foreach ($input as $line) {
@@ -18,13 +20,15 @@
 
 		$beacons[$bX . ',' . $bY] = true;
 
-		$minX = min(min($minX, $sX - $distance), $bX);
-		$maxX = max(max($maxX, $sX + $distance), $bX);
+		$manhattanToCheck = $distance - manhattan($sX, $checkRow, $sX, $sY);
+
+		$minX = min(min($minX, $sX - $manhattanToCheck), $bX);
+		$maxX = max(max($maxX, $sX + $manhattanToCheck), $bX);
 	}
 
 	usort($sensors, fn($a, $b) => $a['loc'][0] <=> $b['loc'][0]);
 
-	$y = isTest() ? 10 : 2000000;
+	$y = $checkRow;
 	$part1 = 0;
 	for ($x = $minX; $x <= $maxX; $x++) {
 		foreach ($sensors as $s) {
