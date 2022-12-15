@@ -22,6 +22,8 @@
 		$maxX = max(max($maxX, $sX + $distance), $bX);
 	}
 
+	usort($sensors, fn($a, $b) => $a['loc'][0] <=> $b['loc'][0]);
+
 	$y = isTest() ? 10 : 2000000;
 	$part1 = 0;
 	for ($x = $minX; $x <= $maxX; $x++) {
@@ -51,30 +53,25 @@
 
 	$min = 0;
 	$max = isTest() ? 20 : 4000000;
+	$part2 = 0;
 	for ($y = $min; $y <= $max; $y++) {
-		for ($x = $min; $x <= $max; $x++) {
-			$covered = false;
-			foreach ($sensors as $s) {
-				$distanceToClosest = $s['distance'];
-				$distanceToMe = manhattan($x, $y, $s['loc'][0], $s['loc'][1]);
+		$x = 0;
+		foreach ($sensors as $s) {
+			$distanceToClosest = $s['distance'];
+			$manhattanToTop = manhattan($s['loc'][0], $y, $s['loc'][0], $s['loc'][1]);
+			$minX = $s['loc'][0] - ($distanceToClosest - $manhattanToTop);
+			$maxX = $s['loc'][0] + ($distanceToClosest - $manhattanToTop);
+			$testX = $distanceToClosest - $manhattanToTop;
 
-				if ($distanceToMe <= $distanceToClosest) {
-					$covered = true;
-
-					// If this space is covered, others along this row
-					// will be as well, so lets bypass those.
-					$manhattanToTop = manhattan($s['loc'][0], $y, $s['loc'][0], $s['loc'][1]);
-					$x = $s['loc'][0] + ($s['distance'] - $manhattanToTop);
-
-					break;
-				}
+			if ($minX <= $x) {
+				$x = max($x, $maxX);
+				if ($x >= $max) { continue 2; }
 			}
+		}
 
-			if (!$covered) {
-				$part2 = (4000000 * $x) + $y;
-				echo json_encode([$x, $y]), "\n";
-				break 2;
-			}
+		if ($x <= $max) {
+			$part2 = (4000000 * $x) + $y;
+			break;
 		}
 	}
 
