@@ -31,11 +31,11 @@
 
 	function dropRock(&$map) {
 		$highestTop = -1;
-		for ($y = 0; $y < count($map); $y++) {
+		for ($y = count($map) - 1; $y >= 0; $y--) {
 			for ($x = 0; $x < 7; $x++) {
 				if (isset($map[$y][$x])) {
 					$highestTop = $y;
-					break;
+					break 2;
 				}
 			}
 		}
@@ -145,16 +145,56 @@
 		echo '+-------+', "\n";
 	}
 
-	for ($i = 0; $i < 2022; $i++) {
-		dropRock($map);
-		 if (isDebug()) {
-			drawCave($map);
-			echo "=====================================================================", "\n";
+	function getMapHeight($map, $wanted = 2022) {
+		global $shapeIndex, $jetIndex;
+
+		$shapeIndex = 0;
+		$jetIndex = 0;
+		$offset = 0;
+		$foundCycle = false;
+		$cycles = [];
+
+		$seen = [];
+		for ($i = 0; $i < $wanted; $i++) {
+			// echo $i, "\n";
+			dropRock($map);
+
+			if (!$foundCycle) {
+				$top = implode('', array_map(fn($i) => isset($map[count($map) - 1][$i]) ? '#' : '.', range(0, 6)));
+				// $code = json_encode([$top, $shapeIndex, $jetIndex]);
+				$code = json_encode([$top, $shapeIndex, $jetIndex]);
+				if (isset($seen[$code])) {
+					$cycleLength = ($i - $seen[$code][0]);
+					$cycleHeight = (count($map) -$seen[$code][1]);
+
+					echo 'Cycle Found at: ', $i, ' (Same as: ', $seen[$code][0], ') => ', ($i - $seen[$code][0]), ' Height is: ', count($map), ' => change: ', count($map) -$seen[$code][1], "\n";
+
+					$cycles[] = $cycleLength;
+					if (count($cycles) > 1 && $cycles[count($cycles) - 1] == $cycles[count($cycles) - 2]) {
+						$foundCycle = true;
+						$diff = floor(($wanted - $i) / $cycleLength);
+						$i += $cycleLength * $diff;
+						$offset += $cycleHeight * $diff;
+					} else {
+						$seen = [];
+					}
+				}
+
+				$seen[$code] = [$i, count($map)];
+			}
+
+			if (isDebug()) {
+				drawCave($map);
+				echo "=====================================================================", "\n";
+			}
 		}
+
+		return count($map) + $offset;
 	}
 
-	$part1 = count($map);
+	$part1 = getMapHeight($map, 2022);
 	echo 'Part 1: ', $part1, "\n";
 
-	// $part2 = -1;
-	// echo 'Part 2: ', $part2, "\n";
+	$part2 = getMapHeight($map, 1000000000000);
+	echo 'Part 2: ', $part2, "\n";
+
