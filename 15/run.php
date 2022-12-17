@@ -63,9 +63,9 @@
 		foreach ($sensors as $s) {
 			$distanceToClosest = $s['distance'];
 			$manhattanToTop = manhattan($s['loc'][0], $y, $s['loc'][0], $s['loc'][1]);
-			$minX = $s['loc'][0] - ($distanceToClosest - $manhattanToTop);
-			$maxX = $s['loc'][0] + ($distanceToClosest - $manhattanToTop);
-			$testX = $distanceToClosest - $manhattanToTop;
+			$diffX = $distanceToClosest - $manhattanToTop;
+			$minX = $s['loc'][0] - $diffX;
+			$maxX = $s['loc'][0] + $diffX;
 
 			if ($minX <= $x) {
 				$x = max($x, $maxX);
@@ -74,7 +74,7 @@
 		}
 
 		if ($x <= $max) {
-			$part2 = (4000000 * $x) + $y;
+			$part2 = (4000000 * ($x + 1)) + $y;
 			break;
 		}
 	}
