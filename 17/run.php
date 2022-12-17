@@ -128,7 +128,7 @@
 					$cycles[] = $cycleLength;
 					if (count($cycles) > 2 && $cycles[count($cycles) - 1] == $cycles[count($cycles) - 2]) {
 						$foundCycle = true;
-						$diff = floor(($wanted - $i) / $cycleLength);
+						$diff = floor(($wanted - $i - 1) / $cycleLength);
 						// Jump ahead.
 						$i += $cycleLength * $diff;
 						$offset += $cycleHeight * $diff;
