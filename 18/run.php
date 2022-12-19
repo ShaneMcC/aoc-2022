@@ -56,7 +56,7 @@
 		return $surfaceArea;
 	}
 
-	function getReachableEmptyCubes($map, $startCube) {
+	function getReachableCubes($map, $startCube) {
 		global $directions, $minX, $maxX, $minY, $maxY, $minZ, $maxZ;
 
 		$outsideCubes = [];
@@ -66,7 +66,6 @@
 			$cube = $queue->dequeue();
 			[$x, $y, $z] = $cube;
 			$id = $x . ',' . $y . ',' . $z;
-			if (isset($map[$z][$y][$x])) { continue; }
 			if (isset($outsideCubes[$id])) { continue; }
 			$outsideCubes[$id] = [$x, $y, $z];
 			if ($z < ($minZ - 1) || $z > ($maxZ + 1) || $y < ($minY - 1) || $y > ($maxY + 1) || $x < ($minX - 1) || $x > ($maxX + 1)) { continue; }
@@ -75,7 +74,7 @@
 				[$x2, $y2, $z2] = [$x + $d['x'], $y + $d['y'], $z + $d['z']];
 				$id2 = $x2 . ',' . $y2 . ',' . $z2;
 
-				if (!isset($map[$z2][$y2][$x2])) {
+				if (isset($map[$z][$y][$x]) == isset($map[$z2][$y2][$x2])) {
 					$queue->enqueue([$x2, $y2, $z2]);
 				}
 			}
@@ -87,6 +86,6 @@
 	$part1 = getSurfaceArea($map, $cubes);
 	echo 'Part 1: ', $part1, "\n";
 
-	$outsideCubes = getReachableEmptyCubes($map, [$minX - 1, $minY - 1, $minZ - 1]);
+	$outsideCubes = getReachableCubes($map, [$minX - 1, $minY - 1, $minZ - 1]);
 	$part2 = getSurfaceArea($map, $outsideCubes);
 	echo 'Part 2: ', $part2, "\n";
