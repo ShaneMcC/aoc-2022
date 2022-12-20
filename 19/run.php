@@ -68,8 +68,8 @@
 		return $options;
 	}
 
-	function buildBP($bp) {
-		$bestQuality = -1;
+	function buildBP($bp, $maxTime) {
+		$geodeCount = -1;
 
 		$materials = ['ore' => 0, 'clay' => 0, 'obsidian' => 0, 'geode' => 0];
 		$robots = ['ore' => 1, 'clay' => 0, 'obsidian' => 0, 'geode' => 0];
@@ -87,10 +87,10 @@
 
 			// Store this option if it is a better result than we had
 			// before.
-			$bestQuality = max($bestQuality, $materials['geode'] * $bp['num']);
+			$geodeCount = max($geodeCount, $materials['geode']);
 
-			// Don't go past minute 24.
-			if ($time > 24) { continue; }
+			// Don't go past max time.
+			if ($time > $maxTime) { continue; }
 
 			// If we have seen this state before, don't bother doing anything
 			// again.
@@ -122,15 +122,19 @@
 			}
 		}
 
-		return $bestQuality;
+		return $geodeCount;
 	}
 
 	foreach ($blueprints as $bpid => $bp) {
-		$blueprints[$bpid]['quality'] = buildBP($bp);
+		$blueprints[$bpid]['quality'] = buildBP($bp, 24) * $bp['num'];
 	}
 
 	$part1 = array_sum(array_map(fn($a) => $a['quality'], $blueprints));
 	echo 'Part 1: ', $part1, "\n";
 
-	// $part2 = -1;
-	// echo 'Part 2: ', $part2, "\n";
+
+	foreach (array_filter($blueprints, fn($a) => $a['num'] <= 3) as $bpid => $bp) {
+		$blueprints[$bpid]['geodeCount'] = buildBP($bp, 32);
+	}
+	$part2 = array_product(array_map(fn($a) => $a['geodeCount'] ?? 1, $blueprints));
+	echo 'Part 2: ', $part2, "\n";
