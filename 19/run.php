@@ -75,15 +75,14 @@
 		$robots = ['ore' => 1, 'clay' => 0, 'obsidian' => 0, 'geode' => 0];
 		$state = [1, $materials, $robots];
 
-		$queue = new SPLPriorityQueue();
-		$queue->setExtractFlags(SplPriorityQueue::EXTR_BOTH);
-		$queue->insert($state, 0);
+		$queue = new SPLQueue();
+		$queue->enqueue($state);
 
 		$visted = [];
 
 		while (!$queue->isEmpty()) {
-			$q = $queue->extract();
-			[$time, $materials, $robots] = $q['data'];
+			$q = $queue->dequeue();
+			[$time, $materials, $robots] = $q;
 
 			// Store this option if it is a better result than we had
 			// before.
@@ -94,7 +93,7 @@
 
 			// If we have seen this state before, don't bother doing anything
 			// again.
-			$f = json_encode($q['data']);
+			$f = json_encode($q);
 			if (isset($visted[$f])) { continue; }
 			$visted[$f] = true;
 
@@ -118,7 +117,7 @@
 				}
 
 				// Enqueue the state.
-				$queue->insert([$time + 1, $nextMaterials, $nextRobots], 0);
+				$queue->enqueue([$time + 1, $nextMaterials, $nextRobots]);
 			}
 		}
 
@@ -131,7 +130,6 @@
 
 	$part1 = array_sum(array_map(fn($a) => $a['quality'], $blueprints));
 	echo 'Part 1: ', $part1, "\n";
-
 
 	foreach (array_filter($blueprints, fn($a) => $a['num'] <= 3) as $bpid => $bp) {
 		$blueprints[$bpid]['geodeCount'] = buildBP($bp, 32);
