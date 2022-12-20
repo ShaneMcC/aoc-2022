@@ -570,13 +570,13 @@
 
 				return <<<WREATH
 $wreath           ,...., $reset
-$wreath        ,;;:${berry}o$wreath;;;${berry}o$wreath;;, $reset
-$wreath      ,;;${berry}o$wreath;'''''';;;;, $reset
-$wreath     ,;:;;        ;;${berry}o$wreath;, $reset
-$wreath     ;${berry}o$wreath;;          ;;;; $reset
-$wreath     ;;${berry}o$wreath;          ;;${berry}o$wreath; $reset
-$wreath     ';;;,  ${bow}_  _$wreath  ,;;;' $reset
-$wreath      ';${berry}o$wreath;;$bow/_\/_\\$wreath;;${berry}o$wreath;' $reset
+$wreath        ,;;:{$berry}o$wreath;;;{$berry}o$wreath;;, $reset
+$wreath      ,;;{$berry}o$wreath;'''''';;;;, $reset
+$wreath     ,;:;;        ;;{$berry}o$wreath;, $reset
+$wreath     ;{$berry}o$wreath;;          ;;;; $reset
+$wreath     ;;{$berry}o$wreath;          ;;{$berry}o$wreath; $reset
+$wreath     ';;;,  {$bow}_  _$wreath  ,;;;' $reset
+$wreath      ';{$berry}o$wreath;;$bow/_\/_\\$wreath;;{$berry}o$wreath;' $reset
 $name      $wreath  ';;$bow\_\/_/$wreath;;' $reset
 $bow           '//\\\' $reset
 $bow           //  \\\ $name     Advent of Code 2022 $reset
@@ -625,7 +625,7 @@ $tree        /.$led3'$tree..$led2'$tree.$led4'$tree.$led3'$tree\ $reset
 $name       $tree /.$led4'$tree..$led1'$tree..$led1'$tree.\ $reset
 $snow "'""""$tree/$led1'$tree.$led2'$tree...$led1'$tree..$led3'$tree.\\$snow""'"'" $reset
 $tree      /$led2'$tree..$led1'$tree$led4'$tree..$led2'$tree.$led1'$tree.$led2'$tree.\ $name Advent of Code 2022 $reset
-$tree      ^^^^^^${box}[_]$tree^^^^^^ $name - ShaneMcC $reset
+$tree      ^^^^^^{$box}[_]$tree^^^^^^ $name - ShaneMcC $reset
 $reset
 
 TREE;
@@ -700,15 +700,15 @@ SANTA;
 $bow           .__. $reset
 $bow         .(\\\\//). $reset
 $bow        .(\\\\()//). $reset
-$box    .----${bow}(\\)\/(/)${box}----. $reset
-$box    |${bow}     ///\\\\\ ${box}    | $reset
-$box    |${bow}    ///||\\\\\ ${box}   | $reset
-$box    |${bow}   //`||||`\\\\ ${box}  | $reset
-$box    |${bow}      ||||${box}      | $reset
-$box    |${bow}      ||||${box}      | $reset
-$box    |${bow}      ||||${box}      | $reset
-$box    |${bow}      ||||${box}      |$name Advent of Code 2022 $reset
-$box    '------${bow}====${box}------'$name - ShaneMcC $reset
+$box    .----{$bow}(\\)\/(/){$box}----. $reset
+$box    |{$bow}     ///\\\\\ {$box}    | $reset
+$box    |{$bow}    ///||\\\\\ {$box}   | $reset
+$box    |{$bow}   //`||||`\\\\ {$box}  | $reset
+$box    |{$bow}      ||||{$box}      | $reset
+$box    |{$bow}      ||||{$box}      | $reset
+$box    |{$bow}      ||||{$box}      | $reset
+$box    |{$bow}      ||||{$box}      |$name Advent of Code 2022 $reset
+$box    '------{$bow}===={$box}------'$name - ShaneMcC $reset
 $reset
 
 PRESENT;
@@ -742,10 +742,10 @@ PRESENT;
 $snow       *     *   $reset
 $snow         $hat    ___  $snow *  $reset
 $snow       * $hat  _|___|_  $snow    *  $reset
-$snow  *      $hat '=${snow}/${eyes}a a${snow}\\${hat}=' $snow  *  $reset
-$snow      *     \\ ${nose}~${snow} /        *  $reset
-$snow    * $arms _\\__${snow}/ '-' \\${arms}__/_  $reset
-$snow      $arms  /  ${snow}\ $buttons o $snow /${arms}  \\  $reset
+$snow  *      $hat '={$snow}/{$eyes}a a{$snow}\\{$hat}=' $snow  *  $reset
+$snow      *     \\ {$nose}~{$snow} /        *  $reset
+$snow    * $arms _\\__{$snow}/ '-' \\{$arms}__/_  $reset
+$snow      $arms  /  {$snow}\ $buttons o $snow /{$arms}  \\  $reset
 $snow  *       / '---' \\   *  $reset
 $snow         |  $buttons  o  $snow  |      *  $reset
 $snow   ---.---\\ $buttons  o $snow  /-----.---  $reset
