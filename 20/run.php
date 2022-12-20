@@ -36,8 +36,8 @@
 			$count++;
 		}
 		// Make the list circular
-		$item->next = $first;
-		$first->prev = $item;
+		$prev->next = $first;
+		$first->prev = $prev;
 
 		return [$first, $zero, $count];
 	}
@@ -107,4 +107,4 @@
 		mixItems($first, $count);
 	}
 	$part2 = array_sum(getBits($zero));
-	echo 'Part 1: ', $part2, "\n";
+	echo 'Part 2: ', $part2, "\n";
