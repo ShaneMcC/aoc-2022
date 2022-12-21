@@ -10,6 +10,8 @@
 		$words[$word] = $what;
 	}
 
+	// Translate a word from the word list.
+	// If part2 is try we will throw an exception if we need a human.
 	function translate($word, $part2 = false) {
 		global $words, $__CACHE;
 
@@ -38,11 +40,12 @@
 		return $answer;
 	}
 
-
-	$part1 = translate('root');
-	echo 'Part 1: ', $part1, "\n";
-
-	function needsHuman($word) {
+	// Partial translate.
+	// Returns a word that we can't translate
+	// the operation we want to do
+	// the value we can translate
+	// and a boolean if the untranslatable word was the left operand
+	function partialTranslate($word) {
 		global $words;
 
 		$splitWords = explode(' ', $words[$word]);
@@ -61,10 +64,21 @@
 		return [$human, $op, $value, $leftIsHuman];
 	}
 
-	[$check, , $target] = needsHuman('root');
+	// Part 1 is easy, just translate stuff.
+	// translate() will recursively call itself as needed.
+	$part1 = translate('root');
+	echo 'Part 1: ', $part1, "\n";
 
+	// For part 2, we can partially translate half of the thing
+	// The other half we need to figure out what to say to make it work
+	//
+	// So we will take the target, then look at each word we can't translate
+	// They will all also partially-translate, so we will then be able to
+	// apply the mathematical operations against the target number in reverse
+	// to get all the way up to the human value we need to shout.
+	[$check, , $target] = partialTranslate('root');
 	while ($check != 'humn') {
-		[$check, $op, $value, $leftIsHuman] = needsHuman($check);
+		[$check, $op, $value, $leftIsHuman] = partialTranslate($check);
 
 		// * and + are always just inverse operation against the target value.
 		//
