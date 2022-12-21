@@ -10,10 +10,12 @@
 		$words[$word] = $what;
 	}
 
-	function translate($word) {
+	function translate($word, $part2 = false) {
 		global $words, $__CACHE;
 
-		if (isset($__CACHE[$word])) { return $__CACHE[$word]; }
+		$cacheKey = ($part2 ? '2' : '1') . ',' . $word;
+		if (isset($__CACHE[$cacheKey])) { return $__CACHE[$cacheKey]; }
+		if ($part2 && $word == 'humn') { throw new Exception('Human Needed'); }
 
 		$what = $words[$word];
 		$answer = NULL;
@@ -22,8 +24,8 @@
 			$answer = $m[1];
 		} else if (preg_match('#([a-z]+) ([/\+\-\*]) ([a-z]+)#SADi', $what, $m)) {
 			[, $a, $s, $b] = $m;
-			$a = translate($a);
-			$b = translate($b);
+			$a = translate($a, $part2);
+			$b = translate($b, $part2);
 
 			if ($s == '/') {
 				$answer = $a / $b;
@@ -36,12 +38,7 @@
 			}
 		}
 
-		if ($answer == null) {
-			DIE('oops');
-		}
-
-
-		$__CACHE[$word] = $answer;
+		$__CACHE[$cacheKey] = $answer;
 		return $answer;
 	}
 
@@ -49,5 +46,46 @@
 	$part1 = translate('root');
 	echo 'Part 1: ', $part1, "\n";
 
-	// $part2 = -1;
-	// echo 'Part 2: ', $part2, "\n";
+	function needsHuman($word) {
+		global $words;
+
+		$splitWords = explode(' ', $words[$word]);
+		$op = $splitWords[1];
+
+		try {
+			$human = $splitWords[2];
+			$value = translate($splitWords[0], true);
+			$leftIsHuman = true;
+		} catch (Exception $e) {
+			$human = $splitWords[0];
+			$value = translate($splitWords[2], true);
+			$leftIsHuman = false;
+		}
+
+		return [$human, $op, $value, $leftIsHuman];
+	}
+
+	[$check, , $target] = needsHuman('root');
+
+	while ($check != 'humn') {
+		[$check, $op, $value, $leftIsHuman] = needsHuman($check);
+
+		// * and + are always just inverted.
+		// / and - differ depending on if the human is left or right.
+		//
+		// If the human is on the left, we do the regular operation.
+		// If the human is on the right, we do the inverse operation.
+
+		if ($op == '+') {
+			$target = $target - $value;
+		} else if ($op == '*') {
+			$target = $target / $value;
+		} else if ($op == '-') {
+			$target = $leftIsHuman ? ($value - $target) : ($target + $value);
+		} else if ($op == '/') {
+			$target = $leftIsHuman ? ($value / $target) : $target * $value;
+		}
+	}
+
+	$part2 = $target;
+	echo 'Part 2: ', $target, "\n";
