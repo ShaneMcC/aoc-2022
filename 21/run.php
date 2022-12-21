@@ -51,11 +51,11 @@
 		try {
 			$human = $splitWords[2];
 			$value = translate($splitWords[0], true);
-			$leftIsHuman = true;
+			$leftIsHuman = false;
 		} catch (Exception $e) {
 			$human = $splitWords[0];
 			$value = translate($splitWords[2], true);
-			$leftIsHuman = false;
+			$leftIsHuman = true;
 		}
 
 		return [$human, $op, $value, $leftIsHuman];
@@ -66,16 +66,17 @@
 	while ($check != 'humn') {
 		[$check, $op, $value, $leftIsHuman] = needsHuman($check);
 
-		// * and + are always just inverted.
-		// / and - differ depending on if the human is left or right.
+		// * and + are always just inverse operation against the target value.
 		//
-		// If the human is on the left, we do the regular operation.
-		// If the human is on the right, we do the inverse operation.
+		//  / and - differ depending on if the human is left or right.
+		//
+		// If the human is on the left, we do the inverse operation against the target
+		// If the human is on the right, we do the forward operation with the target
 
 		if ($op == '+') { $target = $target - $value; }
 		else if ($op == '*') { $target = $target / $value; }
-		else if ($op == '-') { $target = $leftIsHuman ? ($value - $target) : ($target + $value); }
-		else if ($op == '/') { $target = $leftIsHuman ? ($value / $target) : ($target * $value); }
+		else if ($op == '-') { $target = $leftIsHuman ? ($target + $value) : ($value - $target); }
+		else if ($op == '/') { $target = $leftIsHuman ? ($target * $value) : ($value / $target); }
 	}
 
 	$part2 = $target;
