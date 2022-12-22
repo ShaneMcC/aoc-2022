@@ -90,7 +90,7 @@
 		if ($op == '+') { $target = $target - $value; }
 		else if ($op == '*') { $target = $target / $value; }
 		else if ($op == '-') { $target = $leftIsHuman ? ($target + $value) : ($value - $target); }
-		else if ($op == '/') { $target = $leftIsHuman ? ($target * $value) : ($value / $target); }
+		else if ($op == '/') { $target = $target * $value; }
 	}
 
 	$part2 = $target;

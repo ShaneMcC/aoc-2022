@@ -99,6 +99,9 @@
 
 	[$first, $zero, $count] = buildItems($input);
 	mixItems($first, $count);
+
+displayItems($first);
+
 	$part1 = array_sum(getBits($zero));
 	echo 'Part 1: ', $part1, "\n";
 
