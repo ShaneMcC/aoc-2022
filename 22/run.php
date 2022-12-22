@@ -121,28 +121,26 @@
 
 					if ($part2) {
 						[$newX, $newY, $newDirection] = getNextSpace($myX, $myY, $direction);
-						if ($map[$newY][$newX] == '.') {
-							$position = [$newX, $newY];
-							$direction = $newDirection;
-						}
 					} else {
 						[$dX, $dY] = $changes[$direction]['d'];
-						[$x, $y] = [$myX + $dX, $myY + $dY];
-						if (!isset($map[$y][$x]) || $map[$y][$x] == ' ') {
+						[$newX, $newY, $newDirection] = [$myX + $dX, $myY + $dY, $direction];
+
+						if (!isset($map[$newY][$newX]) || $map[$newY][$newX] == ' ') {
 							if ($direction == 'N') {
-								$y = getLastTile(array_column($map, $myX));
+								$newY = getLastTile(array_column($map, $myX));
 							} else if ($direction == 'S') {
-								$y = getFirstTile(array_column($map, $myX));
+								$newY = getFirstTile(array_column($map, $myX));
 							} else if ($direction == 'E') {
-								$x = getFirstTile($map[$myY]);
+								$newX = getFirstTile($map[$myY]);
 							} else if ($direction == 'W') {
-								$x = getLastTile($map[$myY]);
+								$newX = getLastTile($map[$myY]);
 							}
 						}
+					}
 
-						if ($map[$y][$x] == '.') {
-							$position = [$x, $y];
-						}
+					if ($map[$newY][$newX] == '.') {
+						$position = [$newX, $newY];
+						$direction = $newDirection;
 					}
 				}
 			}
