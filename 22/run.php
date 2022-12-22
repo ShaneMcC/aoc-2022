@@ -127,13 +127,8 @@
 						}
 					} else {
 						[$dX, $dY] = $changes[$direction]['d'];
-						[$x, $y, $direction] = [$myX + $dX, $myY + $dY, $direction];
-
-						if (isset($map[$y][$x]) && $map[$y][$x] != ' ') {
-							if ($map[$y][$x] == '.') {
-								$position = [$x, $y];
-							}
-						} else {
+						[$x, $y] = [$myX + $dX, $myY + $dY];
+						if (!isset($map[$y][$x]) || $map[$y][$x] == ' ') {
 							if ($direction == 'N') {
 								$y = getLastTile(array_column($map, $myX));
 							} else if ($direction == 'S') {
@@ -143,10 +138,10 @@
 							} else if ($direction == 'W') {
 								$x = getLastTile($map[$myY]);
 							}
+						}
 
-							if ($map[$y][$x] == '.') {
-								$position = [$x, $y];
-							}
+						if ($map[$y][$x] == '.') {
+							$position = [$x, $y];
 						}
 					}
 				}
