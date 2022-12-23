@@ -94,17 +94,24 @@
 	}
 
 	$attempts = 0;
-	for ($i = 1; $i <= 10; $i++) {
+	$round = 0;
+	do {
+		$round++;
 		[$map, $proposals, $attempts] = doRound($map, $proposals);
 		if (isDebug()) {
-			echo '== End of Round ', $i, ' ==', "\n";
+			echo '== End of Round ', $round, ' ==', "\n";
 			drawSparseMap($map);
 			echo "\n";
 		}
-	}
 
-	[$minX, $minY, $maxX, $maxY] = getBoundingBox($map);
-	$total = (1 + ($maxX - $minX)) * (1 + ($maxY - $minY));
+		if ($round == 10) {
+			[$minX, $minY, $maxX, $maxY] = getBoundingBox($map);
+			$total = (1 + ($maxX - $minX)) * (1 + ($maxY - $minY));
+			$part1 = $total - countCells($map, '#');
+			echo 'Part 1: ', $part1, "\n";
+		}
+	}  while ($attempts != 0);
 
-	$part1 = $total - countCells($map, '#');
-	echo 'Part 1: ', $part1, "\n";
+	$part2 = $round;
+	echo 'Part 1: ', $round, "\n";
+
