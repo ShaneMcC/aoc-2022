@@ -94,12 +94,13 @@
 
 		if ($round == 10) {
 			[$minX, $minY, $maxX, $maxY] = getBoundingBox($map);
-			$total = (1 + ($maxX - $minX)) * (1 + ($maxY - $minY));
+			$total = (($maxX - $minX) + 1) * (($maxY - $minY) + 1);
+
 			$part1 = $total - countCells($map, '#');
 			echo 'Part 1: ', $part1, "\n";
 		}
 	}  while ($attempts != 0);
 
 	$part2 = $round;
-	echo 'Part 1: ', $round, "\n";
+	echo 'Part 2: ', $round, "\n";
 

@@ -319,7 +319,7 @@
 	 */
 	function drawMap($map, $border = false, $title = '') {
 		[$minX, $minY, $maxX, $maxY] = getBoundingBox($map);
-		$width = ($maxX - $minX);
+		$width = ($maxX - $minX) + 1;
 
 		if ($border) {
 			echo "\n";
@@ -355,7 +355,7 @@
 	 */
 	function drawSparseMap($map, $empty = '.', $border = false, $title = '') {
 		[$minX, $minY, $maxX, $maxY] = getBoundingBox($map);
-		$width = ($maxX - $minX);
+		$width = ($maxX - $minX) + 1;
 
 		if ($border) {
 			echo "\n";
@@ -369,7 +369,7 @@
 				echo "\n";
 			}
 
-			echo '┍', str_repeat('━', $width + 1), '┑', "\n";
+			echo '┍', str_repeat('━', $width), '┑', "\n";
 		}
 		for ($y = $minY; $y <= $maxY; $y++) {
 			if ($border) { echo '│'; }
@@ -379,7 +379,7 @@
 			if ($border) { echo '│'; }
 			echo "\n";
 		}
-		if ($border) {  echo '┕', str_repeat('━', $width + 1), '┙', "\n"; }
+		if ($border) {  echo '┕', str_repeat('━', $width), '┙', "\n"; }
 	}
 
 	/**
