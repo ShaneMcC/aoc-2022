@@ -117,6 +117,10 @@
 			if (isDebug()) { echo 'Rock: ', ($i + 1), ' Height: ', (count($map) + $offset), "\n"; }
 
 			if (!$foundCycle) {
+/*				$top = '';
+				for ($c = 1; $c <= 10; $c++) {
+					$top .= implode('', array_map(fn($i) => isset($map[count($map) - $c][$i]) ? '#' : '.', range(0, 6)));
+				}*/
 				$top = implode('', array_map(fn($i) => isset($map[count($map) - 1][$i]) ? '#' : '.', range(0, 6)));
 				$code = json_encode([$top, $shapeIndex, $jetIndex]);
 				if (isset($seen[$code])) {
@@ -144,8 +148,8 @@
 		return count($map) + $offset;
 	}
 
-	$part1 = getMapHeight($map, 2022);
-	echo 'Part 1: ', $part1, "\n";
+	// $part1 = getMapHeight($map, 2022);
+	// echo 'Part 1: ', $part1, "\n";
 
 	$part2 = getMapHeight($map, 1000000000000);
 	echo 'Part 2: ', $part2, "\n";

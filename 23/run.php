@@ -1,17 +1,7 @@
 #!/usr/bin/php
 <?php
 	require_once(dirname(__FILE__) . '/../common/common.php');
-	$input = getInputMap();
-
-	$map = [];
-	foreach ($input as $y => $row) {
-		foreach ($row as $x => $cell) {
-			if ($cell == '#') {
-				if (!isset($map[$y])) { $map[$y] = []; }
-				$map[$y][$x] = $cell;
-			}
-		}
-	}
+	$map = getInputSparseMap();
 
 	$directions = [ 'N' => [0, -1],
 	               'NE' => [1, -1],
@@ -88,8 +78,7 @@
 	}
 
 	if (isDebug()) {
-		echo '== Initial State ==', "\n";
-		drawSparseMap($map);
+		drawSparseMap($map, ' ', true, '== Initial State ==');
 		echo "\n";
 	}
 
@@ -99,8 +88,7 @@
 		$round++;
 		[$map, $proposals, $attempts] = doRound($map, $proposals);
 		if (isDebug()) {
-			echo '== End of Round ', $round, ' ==', "\n";
-			drawSparseMap($map);
+			drawSparseMap($map, ' ', true, '== End of Round ' . $round . ' ==');
 			echo "\n";
 		}
 

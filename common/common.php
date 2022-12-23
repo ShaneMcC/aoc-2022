@@ -100,6 +100,16 @@
 	}
 
 	/**
+	 * Get the input as a sparse map.
+	 *
+	 * @param $remove (Default: ['.', ' ']) Array of characters to remove.
+	 * @return File as a sparse grid[$y][$x].
+	 */
+	function getInputSparseMap($remove = ['.', ' ']) {
+		return sparseMap(getInputMap(), $remove);
+	}
+
+	/**
 	 * Get the input as an array of lines.
 	 *
 	 * @return File as an array of lines. Empty lines are ignored.
@@ -308,16 +318,18 @@
 	 *                draw a title box?
 	 */
 	function drawMap($map, $border = false, $title = '') {
-		$width = is_array($map[0]) ? count($map[0]) : strlen($map[0]);
+		[$minX, $minY, $maxX, $maxY] = getBoundingBox($map);
+		$width = ($maxX - $minX);
 
 		if ($border) {
 			echo "\n";
 
 			if (!empty($title)) {
-				$titlePadding = ($width - strlen($title)) / 2;
-				echo '┍', str_repeat('━', $width), '┑', "\n";
+				$titleWidth = max($width, strlen($title));
+				$titlePadding = ($titleWidth - strlen($title)) / 2;
+				echo '┍', str_repeat('━', $titleWidth), '┑', "\n";
 				echo '│', sprintf("%".floor($titlePadding)."s%s%".ceil($titlePadding).'s', '', $title, ''), '│', "\n";
-				echo '┕', str_repeat('━', $width), '┙', "\n";
+				echo '┕', str_repeat('━', $titleWidth), '┙', "\n";
 				echo "\n";
 			}
 
@@ -342,25 +354,26 @@
 	 *                draw a title box?
 	 */
 	function drawSparseMap($map, $empty = '.', $border = false, $title = '') {
-		$width = 0;
-		foreach ($map as $m) { $width = max($width, is_array($m) ? max(array_keys($m)) : strlen($m) - 1); }
+		[$minX, $minY, $maxX, $maxY] = getBoundingBox($map);
+		$width = ($maxX - $minX);
 
 		if ($border) {
 			echo "\n";
 
 			if (!empty($title)) {
-				$titlePadding = ($width - strlen($title)) / 2;
-				echo '┍', str_repeat('━', $width), '┑', "\n";
+				$titleWidth = max($width, strlen($title));
+				$titlePadding = ($titleWidth - strlen($title)) / 2;
+				echo '┍', str_repeat('━', $titleWidth), '┑', "\n";
 				echo '│', sprintf("%".floor($titlePadding)."s%s%".ceil($titlePadding).'s', '', $title, ''), '│', "\n";
-				echo '┕', str_repeat('━', $width), '┙', "\n";
+				echo '┕', str_repeat('━', $titleWidth), '┙', "\n";
 				echo "\n";
 			}
 
 			echo '┍', str_repeat('━', $width + 1), '┑', "\n";
 		}
-		for ($y = 0; $y <= max(array_keys($map)); $y++) {
+		for ($y = $minY; $y <= $maxY; $y++) {
 			if ($border) { echo '│'; }
-			for ($x = 0; $x <= $width; $x++) {
+			for ($x = $minX; $x <= $maxX; $x++) {
 				echo isset($map[$y][$x]) ? $map[$y][$x] : $empty;
 			}
 			if ($border) { echo '│'; }
@@ -373,24 +386,39 @@
 	 * Convert a sparse map into a non-sparse map
 	 *
 	 * @param $map Sparse map to convert
-	 * @param $width Width to use for new map
-	 * @param $height Height to use for new map
 	 * @return non-sparse version of $map
 	 */
-	function desparseMap($map, $width = 0, $height = 0) {
-		if ($width <= 0) {
-			foreach ($map as $m) { $width = max($width, max(array_keys($m))); }
-			$width += 1;
-		}
-		if ($height <= 0) {
-			$height = max(array_keys($map)) + 1;
-		}
+	function desparseMap($map) {
+		[$minX, $minY, $maxX, $maxY] = getBoundingBox($map);
 
 		$newMap = [];
-		for ($y = 0; $y < $height; $y++) {
+		for ($y = $minY; $y < $maxY; $y++) {
 			$newMap[$y] = [];
-			for ($x = 0; $x < $width; $x++) {
+			for ($x = $minX; $x < $maxX; $x++) {
 				$newMap[$y][$x] = isset($map[$y][$x]) ? $map[$y][$x] : ' ';
+			}
+		}
+
+		return $newMap;
+	}
+
+	/**
+	 * Convert a non-sparse into a sparse map
+	 *
+	 * @param $map Sparse map to convert
+	 * @param $remove (Default: ['.', ' ']) Array of characters to remove.
+	 * @return sparse version of $map
+	 */
+	function sparseMap($map, $remove = ['.', ' ']) {
+		[$minX, $minY, $maxX, $maxY] = getBoundingBox($map);
+
+		$newMap = [];
+		for ($y = $minY; $y <= $maxY; $y++) {
+			$newMap[$y] = [];
+			for ($x = $minX; $x <= $maxX; $x++) {
+				if (isset($map[$y][$x]) && !in_array($map[$y][$x], $remove)) {
+					$newMap[$y][$x] = $map[$y][$x];
+				}
 			}
 		}
 
