@@ -148,8 +148,8 @@
 		return count($map) + $offset;
 	}
 
-	// $part1 = getMapHeight($map, 2022);
-	// echo 'Part 1: ', $part1, "\n";
+	$part1 = getMapHeight($map, 2022);
+	echo 'Part 1: ', $part1, "\n";
 
 	$part2 = getMapHeight($map, 1000000000000);
 	echo 'Part 2: ', $part2, "\n";
