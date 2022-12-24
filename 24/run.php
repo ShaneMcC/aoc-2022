@@ -57,43 +57,32 @@
 	}
 
 	function getRouteCost($grid, $start, $end) {
-		$visited = [];
-		$queue = new SPLPriorityQueue();
-		$queue->setExtractFlags(SplPriorityQueue::EXTR_BOTH);
-		$queue->insert([$start[0], $start[1], 0, 0], 0);
+		$next = [];
+		$next[implode(',', $start)] = true;
 
 		[$minX, $minY, $maxX, $maxY] = getBoundingBox($grid);
 
-		while (!$queue->isEmpty()) {
-			$q = $queue->extract();
-			[$x, $y, $cost, $waited] = $q['data'];
-			// $cost = abs($q['priority']);
-
-			echo json_encode([$x, $y, $cost, $waited, $queue->count()]), "\n";
-
-			if ([$x, $y] == $end) { return $cost; }
-			if ($waited > 3) { continue; } // Don't wait too long.
-
+		for ($cost = 0; $cost < PHP_INT_MAX; $cost++) {
+			$possible = [];
 			$map = getMapAtTime($cost + 1);
+			foreach (array_keys($next) as $n) {
+				[$x, $y] = explode(',', $n);
 
-			$moved = false;
-			foreach (getAllAdjacentCells($map, $x, $y, false, false) as [$pX, $pY]) {
-				 // Blizzard in the space.
-				if (isset($costs[$pY][$pX])) { continue; }
-				// Wall, or something else.
-				if (isset($map[$pY][$pX])) { continue; }
-				// Out of bounds.
-				if ($pY < $minY || $pY > $maxY || $pX < $minX || $pX > $maxX) { continue; }
+				if ([$x, $y] == $end) { return $cost; }
 
-				// echo "\t", json_encode([$pX, $pY]), "\n";
+				foreach (getAllAdjacentCells($map, $x, $y, false, true) as [$pX, $pY]) {
+					 // Blizzard in the space.
+					if (isset($costs[$pY][$pX])) { continue; }
+					// Wall, or something else.
+					if (isset($map[$pY][$pX])) { continue; }
+					// Out of bounds.
+					if ($pY < $minY || $pY > $maxY || $pX < $minX || $pX > $maxX) { continue; }
 
-				$moved = true;
-				$queue->insert([$pX, $pY, $cost + 1, 0], -($cost + 1));
+					$possible[implode(',', [$pX, $pY])] = true;
+				}
 			}
-			if (!$moved) {
-				// Wait if we can't move.
-				$queue->insert([$x, $y, $cost + 1, $waited + 1], -($cost + 1));
-			}
+
+			$next = $possible;
 		}
 
 		return FALSE;
@@ -102,8 +91,6 @@
 	$start = [1, 0];
 	$end = [count($map[0]) - 1, count($map) - 1];
 	$cost = getRouteCost($map, $start, $end);
-
-	var_dump($cost);
 
 	$part1 = $cost;
 	echo 'Part 1: ', $part1, "\n";
