@@ -271,6 +271,32 @@
 	}
 
 	/**
+	 * Generator to provide all adjacent cells of a point. This won't check if
+	 * the cell exists in the grid. (Useful for sparse grids)
+	 *
+	 * @param $grid Grid to look at
+	 * @param $x X point
+	 * @param $y Y point
+	 * @param $diagonal (Default: false) Include diagonals?
+	 * @param $self (Default: false) Include self?
+	 */
+	function getAllAdjacentCells($grid, $x, $y, $diagonal = false, $self = false) {
+		$adjacent = [];
+
+		if ($diagonal) { $adjacent[] = [$x - 1, $y - 1]; }
+		$adjacent[] = [$x, $y - 1];
+		if ($diagonal) { $adjacent[] = [$x + 1, $y - 1]; }
+		$adjacent[] = [$x - 1, $y];
+		if ($self) { $adjacent[] = [$x, $y]; }
+		$adjacent[] = [$x + 1, $y];
+		if ($diagonal) { $adjacent[] = [$x - 1, $y + 1]; }
+		$adjacent[] = [$x, $y + 1];
+		if ($diagonal) { $adjacent[] = [$x + 1, $y + 1]; }
+
+		return $adjacent;
+	}
+
+	/**
 	 * Count cells in a given grid of a given type.
 	 *
 	 * @param $grid Grid to look at
@@ -374,7 +400,7 @@
 		for ($y = $minY; $y <= $maxY; $y++) {
 			if ($border) { echo '│'; }
 			for ($x = $minX; $x <= $maxX; $x++) {
-				echo isset($map[$y][$x]) ? $map[$y][$x] : $empty;
+				echo isset($map[$y][$x]) ? (strlen($map[$y][$x]) > 1 ? strlen($map[$y][$x]) : $map[$y][$x]) : $empty;
 			}
 			if ($border) { echo '│'; }
 			echo "\n";
