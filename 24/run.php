@@ -56,19 +56,19 @@
 		return $newMap;
 	}
 
-	function getRouteCost($grid, $start, $end) {
+	function getRouteCost($grid, $start, $end, $startTime = 0) {
 		$next = [];
 		$next[implode(',', $start)] = true;
 
 		[$minX, $minY, $maxX, $maxY] = getBoundingBox($grid);
 
-		for ($cost = 0; $cost < PHP_INT_MAX; $cost++) {
+		for ($cost = $startTime; $cost < PHP_INT_MAX; $cost++) {
 			$possible = [];
 			$map = getMapAtTime($cost + 1);
 			foreach (array_keys($next) as $n) {
 				[$x, $y] = explode(',', $n);
 
-				if ([$x, $y] == $end) { return $cost; }
+				if ([$x, $y] == $end) { return $cost - $startTime; }
 
 				foreach (getAllAdjacentCells($map, $x, $y, false, true) as [$pX, $pY]) {
 					 // Blizzard in the space.
@@ -95,5 +95,10 @@
 	$part1 = $cost;
 	echo 'Part 1: ', $part1, "\n";
 
-	// $part2 = -1;
-	// echo 'Part 2: ', $part2, "\n";
+	// Back to the start
+	$cost += getRouteCost($map, $end, $start, $cost);
+	// Back to the end again.
+	$cost += getRouteCost($map, $start, $end, $cost);
+
+	$part2 = $cost;
+	echo 'Part 2: ', $part2, "\n";
