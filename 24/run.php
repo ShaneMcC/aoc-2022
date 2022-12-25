@@ -62,15 +62,15 @@
 
 	function getRouteCost($grid, $start, $end, $startTime = 0) {
 		$next = [];
-		$next[implode(',', $start)] = true;
+		$next[] = $start;
 
 		[$minX, $minY, $maxX, $maxY] = getBoundingBox($grid);
 
 		for ($cost = $startTime; $cost < PHP_INT_MAX; $cost++) {
 			$possible = [];
 			$map = getMapAtTime($cost + 1);
-			foreach (array_keys($next) as $n) {
-				[$x, $y] = explode(',', $n);
+			foreach ($next as $n) {
+				[$x, $y] = $n;
 
 				if ([$x, $y] == $end) { return $cost - $startTime; }
 
@@ -80,7 +80,7 @@
 					// Out of bounds.
 					if ($pY < $minY || $pY > $maxY || $pX < $minX || $pX > $maxX) { continue; }
 
-					$possible[implode(',', [$pX, $pY])] = true;
+					$possible[$pX . '.' . $pY] = [$pX, $pY];
 				}
 			}
 
