@@ -6,13 +6,7 @@
 	$_CACHE[0] = $map;
 	$maxBlizzardTime = (max(array_keys($map)) - 1) * (max(array_keys($map[0])) - 1);
 
-	function getMapAtTime($time) {
-		global $_CACHE, $maxBlizzardTime;
-
-		$time = $time % $maxBlizzardTime;
-		if (isset($_CACHE[$time])) { return $_CACHE[$time]; }
-		$map = getMapAtTime(max(0, $time - 1));
-
+	function advanceMap($map) {
 		$newMap = [];
 		foreach ($map as $y => $row) {
 			foreach ($row as $x => $cell) {
@@ -52,8 +46,18 @@
 			}
 		}
 
-		$_CACHE[$time] = $newMap;
 		return $newMap;
+	}
+
+	function getMapAtTime($time) {
+		global $_CACHE, $maxBlizzardTime;
+
+		$time = $time % $maxBlizzardTime;
+		if (!isset($_CACHE[$time])) {
+			$_CACHE[$time] = advanceMap(getMapAtTime(max(0, $time - 1)));
+		}
+
+		return $_CACHE[$time];
 	}
 
 	function getRouteCost($grid, $start, $end, $startTime = 0) {
@@ -71,9 +75,7 @@
 				if ([$x, $y] == $end) { return $cost - $startTime; }
 
 				foreach (getAllAdjacentCells($map, $x, $y, false, true) as [$pX, $pY]) {
-					 // Blizzard in the space.
-					if (isset($costs[$pY][$pX])) { continue; }
-					// Wall, or something else.
+					// Wall or blizzard.
 					if (isset($map[$pY][$pX])) { continue; }
 					// Out of bounds.
 					if ($pY < $minY || $pY > $maxY || $pX < $minX || $pX > $maxX) { continue; }
