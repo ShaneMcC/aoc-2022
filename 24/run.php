@@ -3,7 +3,7 @@
 	require_once(dirname(__FILE__) . '/../common/common.php');
 	$map = getInputSparseMap();
 
-	$_CACHE[0] = $map;
+	storeCachedResult(0, $map);
 	$maxBlizzardTime = (max(array_keys($map)) - 1) * (max(array_keys($map[0])) - 1);
 
 	function advanceMap($map) {
@@ -50,14 +50,12 @@
 	}
 
 	function getMapAtTime($time) {
-		global $_CACHE, $maxBlizzardTime;
+		global $maxBlizzardTime;
 
 		$time = $time % $maxBlizzardTime;
-		if (!isset($_CACHE[$time])) {
-			$_CACHE[$time] = advanceMap(getMapAtTime(max(0, $time - 1)));
-		}
-
-		return $_CACHE[$time];
+		return storeCachedResult($time, function() use ($time) {
+			return advanceMap(getMapAtTime(max(0, $time - 1)));
+		});
 	}
 
 	function getRouteCost($grid, $start, $end, $startTime = 0) {

@@ -13,31 +13,30 @@
 	// Translate a word from the word list.
 	// If part2 is try we will throw an exception if we need a human.
 	function translate($word, $part2 = false) {
-		global $words, $__CACHE;
+		$key = json_encode([__FILE__, __LINE__, func_get_args()]);
+		return storeCachedResult($key, function() use ($word, $part2) {
+			global $words;
 
-		if ($part2 && $word == 'humn') { throw new Exception('Human Needed'); }
+			if ($part2 && $word == 'humn') { throw new Exception('Human Needed'); }
 
-		$cacheKey = ($part2 ? '2' : '1') . ',' . $word;
-		if (isset($__CACHE[$cacheKey])) { return $__CACHE[$cacheKey]; }
+			$what = $words[$word];
+			$answer = NULL;
 
-		$what = $words[$word];
-		$answer = NULL;
+			if (preg_match('#([0-9]+)#SADi', $what, $m)) {
+				$answer = $m[1];
+			} else if (preg_match('#([a-z]+) ([/\+\-\*]) ([a-z]+)#SADi', $what, $m)) {
+				$a = translate($m[1], $part2);
+				$op = $m[2];
+				$b = translate($m[3], $part2);
 
-		if (preg_match('#([0-9]+)#SADi', $what, $m)) {
-			$answer = $m[1];
-		} else if (preg_match('#([a-z]+) ([/\+\-\*]) ([a-z]+)#SADi', $what, $m)) {
-			$a = translate($m[1], $part2);
-			$op = $m[2];
-			$b = translate($m[3], $part2);
+				if ($op == '+') { $answer = $a + $b; }
+				else if ($op == '-') { $answer = $a - $b; }
+				else if ($op == '*') { $answer = $a * $b; }
+				else if ($op == '/') { $answer = $a / $b; }
+			}
 
-			if ($op == '+') { $answer = $a + $b; }
-			else if ($op == '-') { $answer = $a - $b; }
-			else if ($op == '*') { $answer = $a * $b; }
-			else if ($op == '/') { $answer = $a / $b; }
-		}
-
-		$__CACHE[$cacheKey] = $answer;
-		return $answer;
+			return $answer;
+		});
 	}
 
 	// Partial translate.

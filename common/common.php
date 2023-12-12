@@ -600,6 +600,23 @@
 		return ($a * $b / gcd($a, $b));
 	}
 
+	/**
+	 * Compute and cache a result.
+	 *
+	 * @param string $key Key to cache with. For example `$key = json_encode([__FILE__, __LINE__, func_get_args()]);`
+	 * @param callable $function
+	 * @return mixed Result of calling $function
+	 */
+	function storeCachedResult($key, $function) {
+		static $_CACHE = [];
+
+		if (!array_key_exists($key, $_CACHE)) {
+			$_CACHE[$key] = is_callable($function) ? $function() : $function;
+		}
+
+		return $_CACHE[$key];
+	}
+
 	// Remove unneeded stuff when timing.
 	if (getenv("TIMED") === FALSE) {
 		/**
